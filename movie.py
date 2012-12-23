@@ -17,7 +17,7 @@ LIMIT = 1000
 
 #True for fancy HTML output
 #False for simple output with only the rating
-HTML_OUTPUT = False
+HTML_OUTPUT = True
 
 #Match this regex pattern
 movie_match_regex = "^[A-Za-z0-9' -]+"
@@ -53,6 +53,47 @@ def removeTrailingNumber(string):
         #keep the whole string
         return string
 
+#Given a nice IMDB movie dictionary (which this program generates) output a nice html page
+def generateHTMLOutput(movie_dict, not_found_dict):
+    
+    print "<html>"
+
+    print "<head>"
+    print "<title>Movie Info Output</title>"
+    print "</head>"
+
+    print "<body>"
+
+    print "<h1>Movie Info Output</h1>"
+
+    print "<div>"
+    print "%d items matched in directory!<br />" % (len(movie_dict) + len(not_found_dict))
+    print "%d movies which we found!<br />" % len(movie_dict)
+    print "%d movies which we couldn't find!<br />" % len(not_found_dict)
+    print "<br />"
+    print "</div>"
+
+    print "<table border=\"1\">"
+
+    print "\t<tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Link</th> </tr>"
+    #Loop through the dictionary of found movies...
+
+    #The second part of this sorts in order of highest IMDB rating
+    for (current_movie,data) in sorted(movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v[u'imdbRating'],k)):
+
+        print "\t<tr>",
+        print " <td><img src=\"%s\" height=\"20%%\" width=\"20%%\" /></td>" % data[u'Poster'],
+        print " <td>%s (%s)</td>" % (data[u'Title'], data[u'Rated']),
+        print " <td>%s</td>" % data[u'imdbRating'],
+        print " <td>%s</td>" % data[u'Released'][-4:],
+        print " <td><a href=\"http://imdb.com/title/%s\">Click Here</a></td>" % data[u'imdbID'],
+        print "</tr>"
+
+    print "</table>"
+
+    print "</body>"
+    print "</html>"
+
 
 #go through everything in the current folder
 for files in os.listdir("."):
@@ -72,7 +113,7 @@ for files in os.listdir("."):
 
 
 
-print "%d items matched in directory!" % len(movies_list)
+#print "%d items matched in directory!" % len(movies_list)
 
 #Loop through the potential movies in the list
 count = 0   #keep a count of the number of items we have checked...
@@ -128,10 +169,17 @@ while (count < LIMIT and count < len(movies_list)):
 #Output
 #####################################################
 if HTML_OUTPUT:
-    print "<html>"
+    generateHTMLOutput(movie_dict, not_found_dict)
 
 #Do the simple output
 else:
+    print "---------------------------------------"
+    print "Movie Info By Kim Bratzel (Simple Output)"
+    print "---------------------------------------"
+    print "%d items matched in directory!" % len(movies_list)
+    print "%d movies which we found!" % len(movie_dict)
+    print "%d movies which we couldn't find!" % len(not_found_dict)
+
     #Print movies which we found
     print "---------------------------------------"
     print "Movies which we found data for:\n"
