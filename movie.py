@@ -135,7 +135,8 @@ else:
     #Print movies which we found
     print "---------------------------------------"
     print "Movies which we found data for:\n"
-    for (current_movie,data) in movie_dict.iteritems():
+    #The second part of this sorts in order of highest IMDB rating
+    for (current_movie,data) in sorted(movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v[u'imdbRating'],k)):
             print "-- %32s \t\t %s " % (current_movie, data[u'imdbRating'])
 
     print "---------------------------------------"
