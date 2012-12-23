@@ -1,16 +1,8 @@
-This is the ReadMe for Movie Info 0.1
+This is the ReadMe for Movie Info 0.2
 By Kim Bratzel 2012
 
 
-Movie Info currently loops through a folder of movies, it looks at all filenames and directory names (not nested) and looks up the movie's IMDB rating. It then outputs every movie which it matches and returns the rating value.
+Movie Info currently loops through a folder of movies, it looks at all filenames and directory names within this folder and uses this information to looks up each movie on IMDB. 
+It then outputs every movie's title which it matched and returns them in order of their IMDB rating.
 
--Currently in its infancy
--Hard coded directory
--Very Simple Output
-
-TODO:
-
--Sort output by order of highest rating.
--Get more data from IMDB (description etc etc)
--Also get data from other sources (Rotten Tomatoes)
--...
+It can now also output a much more advanced web page with details on all of the matched movies. The web pages allows you to sort by any of the IMDB attributes and it includes an image of each movie's poster, so you can visualise your collection!
