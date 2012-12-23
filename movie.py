@@ -60,6 +60,13 @@ def generateHTMLOutput(movie_dict, not_found_dict):
 
     print "<head>"
     print "<title>Movie Info Output</title>"
+    print ""
+    print "<script type=\"text/javascript\" charset=\"utf-8\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script>"
+    print "<script type=\"text/javascript\" charset=\"utf-8\" src=\"scripts/jquery.dataTables.js\"></script>"
+    print "<script type=\"text/javascript\" charset=\"utf-8\" src=\"scripts/scripts.js\"></script>"
+    print ""
+    print "<style type=\"text/css\" title=\"currentStyle\">@import \"css/style.css\";</style>"
+    print "<style type=\"text/css\" title=\"currentStyle\">@import \"css/table.css\";</style>"
     print "</head>"
 
     print "<body>"
@@ -73,21 +80,27 @@ def generateHTMLOutput(movie_dict, not_found_dict):
     print "<br />"
     print "</div>"
 
-    print "<table border=\"1\">"
+    print "<table border=\"1\" id=\"movie_table\" class=\"display\">"
 
-    print "\t<tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Link</th> </tr>"
+    print "<thead>"
+    print "\t<tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Rated</th> <th>Link</th> </tr>"
+    print "</thead>"
     #Loop through the dictionary of found movies...
 
+    print "<tbody>"
     #The second part of this sorts in order of highest IMDB rating
     for (current_movie,data) in sorted(movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v[u'imdbRating'],k)):
 
         print "\t<tr>",
-        print " <td><img src=\"%s\" height=\"20%%\" width=\"20%%\" /></td>" % data[u'Poster'],
-        print " <td>%s (%s)</td>" % (data[u'Title'], data[u'Rated']),
+        print " <td><img src=\"%s\" class=\"cover\" /></td>" % data[u'Poster'],
+        print " <td>%s</td>" % (data[u'Title']),
         print " <td>%s</td>" % data[u'imdbRating'],
         print " <td>%s</td>" % data[u'Released'][-4:],
+        print " <td>%s</td>" % data[u'Rated'],
         print " <td><a href=\"http://imdb.com/title/%s\">Click Here</a></td>" % data[u'imdbID'],
         print "</tr>"
+
+    print "</tbody>"
 
     print "</table>"
 
