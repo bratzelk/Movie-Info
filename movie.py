@@ -8,8 +8,8 @@ import re
 #####################################################
 #The directory where your movies are stored
 #They can be files or folders within that dir
-#MOVIE_DIR = "/Volumes/My_Book/Movies"
-MOVIE_DIR = "/Users/kim/Downloads/complete/Movies"
+MOVIE_DIR = "/Volumes/My_Book/Movies"
+#MOVIE_DIR = "/Users/kim/Downloads/complete/Movies"
 
 #The maximum number of movies to search through
 #Use a small number for testing, default: 1000
