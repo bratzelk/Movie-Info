@@ -1,30 +1,56 @@
+#####################################################
+#Movie Info 0.5
+#By Kim Bratzel 2014
+#####################################################
+
 import os
 import json
 import urllib2
 import re
+import argparse
 
 #####################################################
-#Settings
+#Usage Examples
 #####################################################
-#The directory where your movies are stored
-#They can be files or folders within that dir
-MOVIE_DIR = "/Volumes/My_Book/Movies"
-#MOVIE_DIR = "/Users/kim/Downloads/complete/Movies"
 
-#The maximum number of movies to search through
-#Use a small number for testing, default: 1000
-LIMIT = 1000
+#python movie.py -d ./tests/test01              -html -limit 500  > example-output.html
+#python movie.py -d ./tests                           -l 900      > example-output.txt
 
-#True for fancy HTML output
-#False for simple output with only the rating
-HTML_OUTPUT = True
+#python movie.py -dir /Volumes/My_Book/Movies   -html             > example-output.html
+#python movie.py -dir /Volumes/KIM/TV Shows     -html -limit 500  > example-output.html
 
-#Match this regex pattern
+#python movie.py -h (help)
+#python movie.py -v (version)
+
+
+#The most important part is the directory where your movies are stored
+#They can be files or folders within that directory
+
+#####################################################
+
+
+#Set up the command line arguments
+parser = argparse.ArgumentParser(description='Movie Info')
+parser.add_argument('-dir', '-d', required=True,
+                   help='The directory where your movies are stored')
+parser.add_argument('-limit', '-l', type=int, nargs='?', default=1000, required=False,
+                   help='The maximum number of movies to search through')
+parser.add_argument('-html','-o', default=False, required=False, action='store_true', 
+                   help='Output in HTML')
+parser.add_argument('-v', action='version', version='%(prog)s 0.5')
+
+args = vars(parser.parse_args())
+
+
+#get our command line arguments as variables
+MOVIE_DIR = args['dir']
+HTML_OUTPUT = args['html']
+LIMIT = args['limit']
+
+#####################################################
+#Match this regex pattern (this could change, but good for now)
 movie_match_regex = "^[A-Za-z0-9' -]+"
 #####################################################
-
-
-
 
 #stores a list of titles from the local drive
 movies_list = []
@@ -54,6 +80,7 @@ def removeTrailingNumber(string):
         return string
 
 #Given a nice IMDB movie dictionary (which this program generates) output a nice html page
+#This is a horrible way of doing it... will change to a template style output soon...
 def generateHTMLOutput(movie_dict, not_found_dict):
     
     print "<html>"
@@ -62,16 +89,16 @@ def generateHTMLOutput(movie_dict, not_found_dict):
     print "<title>Movie Info Output</title>"
     print ""
     print "<script type=\"text/javascript\" charset=\"utf-8\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js\"></script>"
-    print "<script type=\"text/javascript\" charset=\"utf-8\" src=\"scripts/jquery.dataTables.js\"></script>"
-    print "<script type=\"text/javascript\" charset=\"utf-8\" src=\"scripts/scripts.js\"></script>"
+    print "<script type=\"text/javascript\" charset=\"utf-8\" src=\"_html_files/scripts/jquery.dataTables.js\"></script>"
+    print "<script type=\"text/javascript\" charset=\"utf-8\" src=\"_html_files/scripts/scripts.js\"></script>"
     print ""
-    print "<style type=\"text/css\" title=\"currentStyle\">@import \"css/style.css\";</style>"
-    print "<style type=\"text/css\" title=\"currentStyle\">@import \"css/table.css\";</style>"
+    print "<style type=\"text/css\" title=\"currentStyle\">@import \"_html_files/css/style.css\";</style>"
+    print "<style type=\"text/css\" title=\"currentStyle\">@import \"_html_files/css/table.css\";</style>"
     print "</head>"
 
     print "<body>"
 
-    print "<h1>Movie Info Output</h1>"
+    print "<h1>Movie Info - Output</h1>"
 
     print "<div>"
     print "%d items matched in directory!<br />" % (len(movie_dict) + len(not_found_dict))
@@ -111,9 +138,11 @@ def generateHTMLOutput(movie_dict, not_found_dict):
 #go through everything in the current folder
 for files in os.listdir("."):
 
+        #should probably ignore files which aren't the correct type and aren't a directory
+
+
         #Match our regex against everything in the folder
         matchObj = re.match( movie_match_regex , files)
-
 
         #Add all items which matched the pattern to our list to lookup later
         if matchObj:
@@ -136,6 +165,9 @@ while (count < LIMIT and count < len(movies_list)):
 
     #Replace spaces with a + (so it's a valid url)
     title = movies_list[count].replace(' ','+')
+
+    #should probably check for special html chars (& etc) too...
+
     #Get the year using the regex later if needed (it seems to be quite successful without it)
     year = ""
 

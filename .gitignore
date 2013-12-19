@@ -1,0 +1,8 @@
+src/js/base/templates.js
+.DS_Store
+src/js/base/templates.js
+build
+node_modules
+./components
+coverage
+docs
