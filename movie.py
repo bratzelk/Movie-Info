@@ -9,6 +9,8 @@ import urllib2
 import re
 import argparse
 
+from jinja2 import Template
+
 #####################################################
 #Usage Examples
 #####################################################
@@ -177,35 +179,30 @@ while (count < LIMIT and count < len(movies_list)):
 
 
     #Try and get a json response from the URL...
-    error = False
     try:
         data = urllib2.urlopen(url).read()
     except urllib2.HTTPError, e:
         print "HTTP error: %d" % e.code
-        error = True
+        exit()
     except urllib2.URLError, e:
         print "Network error: %s" % e.reason.args[1]
-        error = True
+        exit()
 
     #It looks like the lookup returned something...
-    if not error:
-        json_movie_data = json.loads(data)
+    json_movie_data = json.loads(data)
 
-        #Check if it found anything useful
-        if json_movie_data[u'Response'] == "True":
-            
-            #print "A movie was found!"
-            #print objs
-            movie_dict[json_movie_data[u'Title']]     = json_movie_data
-            #json_movie_data keys include: imdbRating, title, year, rated, released, director...
+    #Check if it found anything useful
+    if json_movie_data[u'Response'] == "True":
+        
+        #print "A movie was found!"
+        #print objs
+        movie_dict[json_movie_data[u'Title']]     = json_movie_data
+        #json_movie_data keys include: imdbRating, title, year, rated, released, director...
 
-        else:
-            #print "This movie was not found!"
-            not_found_dict[movies_list[count]]     = json_movie_data
-    
     else:
-        print "Fatal Error, can not continue!"
-        break;
+        #print "This movie was not found!"
+        not_found_dict[movies_list[count]]     = json_movie_data
+
 
 
     count += 1
