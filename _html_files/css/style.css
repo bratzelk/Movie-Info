@@ -1,3 +1,8 @@
 .cover {
 	max-width: 100px;
 }
+
+body {
+    font-family: Arial;
+    font-size: 16px;
+}
