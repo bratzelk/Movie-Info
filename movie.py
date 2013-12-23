@@ -6,6 +6,7 @@
 import os
 import json
 import urllib2
+import socket
 import re
 import argparse
 
@@ -15,14 +16,23 @@ from jinja2 import Environment, FileSystemLoader
 #Some Settings
 #####################################################
 
-#The regex pattern used to match movie names (this could change, but good for now)
-movie_match_regex = "^[A-Za-z0-9' -]+"
+#the amount of time to wait before timing out 
+timeout = 5
+
+#a list of filetypes to match (it will also match directory names)
+#filetypes = "tmp|avi|mpg|mpeg|mkv"
+allowed_filetypes = ["tmp","avi","mpg","mpeg","mkv"]
+
+#The regex pattern used to match movie names
+movie_match_regex = "^[^.][A-Za-z0-9\.' -]+$"
 
 #The directory where the html templates are stored
 template_directory = os.path.dirname(os.path.abspath(__file__)) + "/templates"
 
 #####################################################
 
+#set the timeout
+socket.setdefaulttimeout(timeout)
 
 #Set up the command line arguments
 parser = argparse.ArgumentParser(description='Movie Info')
@@ -42,15 +52,18 @@ MOVIE_DIR = args['dir']
 HTML_OUTPUT = args['html']
 LIMIT = args['limit']
 
-#stores a list of titles from the local drive
+#stores a list of titles from the local drive which were match in the given directory
 movies_list = []
+
+#A list of items which were ignored due to their file extension (not really used for anything)
+ignored_movie_list = []
 
 #dictionary of movies with all details from IMDB
 #key is the title
 #value is the list of attributes from IMDB
 movie_dict = {}
 
-#structure for storing movies which we couldn't find
+#structure for storing movies which we couldn't find information on (helpful so you can see why the information wasn't found)
 not_found_dict = {}
 
 #open the directory containing all of the movies.
@@ -70,7 +83,38 @@ def removeTrailingNumber(string):
         #keep the whole string
         return string
 
+#####################################################
+#Function to produce some simple output
+#####################################################
+def simpleOutput(movie_dict, not_found_dict, ignored_movie_list):
+    print "---------------------------------------"
+    print "Movie Info By Kim Bratzel (Simple Output)"
+    print "---------------------------------------"
+    print "%d item(s) matched in directory!" % (len(movie_dict) + len(not_found_dict))
+    print "%d movie(s) which we found!" % len(movie_dict)
+    print "%d movie(s) which we couldn't find!" % len(not_found_dict)
+    print "%d file(s) which we totally ignored!" % len(ignored_movie_list)
 
+    #Print movies which we found
+    print "---------------------------------------"
+    print "Movies which we found data for:\n"
+    #The second part of this sorts in order of highest IMDB rating
+    for (current_movie,data) in movie_dict:
+            print "-- %32s \t\t %s " % (current_movie, data['imdbRating'])
+
+    print "---------------------------------------"
+    print "Items which we found NO data for:\n"
+    #Print movies which couldn't be found
+    for (current_movie,data) in not_found_dict.iteritems():
+            print "-- %32s " % current_movie
+    print "---------------------------------------"
+
+    print "Items which we ignored:\n"
+    #Print movies which couldn't be found
+    for (ignored) in ignored_movie_list:
+            print "-- %32s " % ignored
+    print "---------------------------------------"
+    print "Done."
 
 
 #####################################################
@@ -85,26 +129,34 @@ if __name__ == '__main__':
 
 
             #Match our regex against everything in the folder
-            matchObj = re.match( movie_match_regex , files)
+            matchObj = re.match( movie_match_regex , files.lower())
 
             #Add all items which matched the pattern to our list to lookup later
             if matchObj:
 
-                movie = matchObj.group()
-                movie = removeTrailingNumber(movie)
-
-                movies_list.append(movie)
-                #print "Title: ", movie
+                movie_title = matchObj.group()
 
 
+                #extract file extension if it exists
+                try:
+                    (movie_title, extension) = movie_title.rsplit( ".", 1 )
+                except:
+                    extension = ""
+
+                #if the file extension does not exist or is allowed we add the movie to the list
+                if len(extension) in range(1,5) and extension not in allowed_filetypes:
+                    #print "Ignoring Film: %s" % movie_title
+                    ignored_movie_list.append(movie_title+"."+extension)
+                else:
+                    movie_title = removeTrailingNumber(movie_title)
+                    movies_list.append(movie_title)
+                    #print movie_title
 
     #print "%d items matched in directory!" % len(movies_list)
 
     #Loop through the potential movies in the list
     count = 0   #keep a count of the number of items we have checked...
     while (count < LIMIT and count < len(movies_list)):
-
-        #print movies_list[count]
 
         #Replace spaces with a + (so it's a valid url)
         title = movies_list[count].replace(' ','+')
@@ -118,7 +170,6 @@ if __name__ == '__main__':
         url = 'http://www.imdbapi.com/?t=%s&y=%s' % (title, year)
         #print url
 
-
         #Try and get a json response from the URL...
         try:
             data = urllib2.urlopen(url).read()
@@ -126,30 +177,29 @@ if __name__ == '__main__':
             print "HTTP error: %d" % e.code
             exit()
         except urllib2.URLError, e:
-            print "Network error: %s" % e.reason.args[1]
+            print "Network error: %s" % e.reason
             exit()
 
         #It looks like the lookup returned something...
-        json_movie_data = json.loads(data)
+        json_movie_data = json.loads(data, encoding="utf-8")
+        #print json_movie_data
 
         #Check if it found anything useful
-        if json_movie_data[u'Response'] == "True":
+        if json_movie_data['Response']  == "True": #probably not the best way to check this...
             
-            #print "A movie was found!"
-            #print objs
-            movie_dict[json_movie_data[u'Title']]     = json_movie_data
+            #print "Found Movie: %s" % title
+            print "Found Movie: %s" % json_movie_data['Title']
+            movie_dict[json_movie_data['Title']]     = json_movie_data
             #json_movie_data keys include: imdbRating, title, year, rated, released, director...
 
         else:
-            #print "This movie was not found!"
+            print "Couldn't Find: %s" % title
             not_found_dict[movies_list[count]]     = json_movie_data
-
 
         count += 1
 
-
-    #sort our movies by their IMDB rating.
-    movie_dict = sorted(movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v[u'imdbRating'],k))
+    #sort our movie dictionary by their IMDB rating value.
+    movie_dict = sorted(movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v['imdbRating'],k))
 
 
     #####################################################
@@ -169,25 +219,5 @@ if __name__ == '__main__':
     #Simple Output
     #####################################################
     else:
-        print "---------------------------------------"
-        print "Movie Info By Kim Bratzel (Simple Output)"
-        print "---------------------------------------"
-        print "%d items matched in directory!" % len(movies_list)
-        print "%d movies which we found!" % len(movie_dict)
-        print "%d movies which we couldn't find!" % len(not_found_dict)
-
-        #Print movies which we found
-        print "---------------------------------------"
-        print "Movies which we found data for:\n"
-        #The second part of this sorts in order of highest IMDB rating
-        for (current_movie,data) in movie_dict:
-                print "-- %32s \t\t %s " % (current_movie, data[u'imdbRating'])
-
-        print "---------------------------------------"
-        print "Items which we found NO data for:\n"
-        #Print movies which couldn't be found
-        for (current_movie,data) in not_found_dict.iteritems():
-                print "-- %32s " % current_movie
-        print "---------------------------------------"
-        print "Done."
+        simpleOutput(movie_dict, not_found_dict, ignored_movie_list)
 

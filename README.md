@@ -46,10 +46,11 @@ This is still very much a work in progress.
 #####################################################
 #ToDo
 #####################################################
+#Separate script into function blocks to make testing easier
 #More Sanity/Error Checks
 #Make HTML Pretty (Bootstrap etc)
 #Add a list of movies which weren't found to the HTML output
-#Improve the Movie Matching (ignore files which aren't movies)
 #Start test cases and run script
+#Remove horrible commented out print statements
 #Much more...
 #####################################################
