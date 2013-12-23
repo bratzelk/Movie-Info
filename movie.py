@@ -16,7 +16,7 @@ from jinja2 import Environment, FileSystemLoader
 #Some Settings
 #####################################################
 
-#the amount of time to wait before timing out 
+#the amount of time to wait before timing out during each lookup
 timeout = 5
 
 #a list of filetypes to match (it will also match directory names)
@@ -30,27 +30,6 @@ movie_match_regex = "^[^.][A-Za-z0-9\.' -]+$"
 template_directory = os.path.dirname(os.path.abspath(__file__)) + "/templates"
 
 #####################################################
-
-#set the timeout
-socket.setdefaulttimeout(timeout)
-
-#Set up the command line arguments
-parser = argparse.ArgumentParser(description='Movie Info')
-parser.add_argument('-dir', '-d', required=True,
-                   help='The directory where your movies are stored')
-parser.add_argument('-limit', '-l', type=int, nargs='?', default=1000, required=False,
-                   help='The maximum number of movies to search through')
-parser.add_argument('-html','-o', default=False, required=False, action='store_true', 
-                   help='Output in HTML')
-parser.add_argument('-v', action='version', version='%(prog)s 0.5')
-
-args = vars(parser.parse_args())
-
-
-#get our command line arguments as variables
-MOVIE_DIR = args['dir']
-HTML_OUTPUT = args['html']
-LIMIT = args['limit']
 
 
 
@@ -81,6 +60,32 @@ class MovieMatcher:
     def getIgnoredList(self):
         return self.ignored_movie_list
 
+    #If the last four chars of a string are a number, remove them
+    #This might cause a problem with some movies...
+    def _removeTrailingNumber(self, string):
+        last4chars = string[-4:]
+        if last4chars.isdigit():
+            #remove the string
+            return string[:-4]
+        else:
+            #keep the whole string
+            return string
+
+    def _getFileExtension(self, fullFileName):
+        #extract file extension if it exists
+        try:
+            (filename, extension) = fullFileName.rsplit( ".", 1 )
+        except:
+            filename = fullFileName
+            extension = ""
+        return (filename, extension)
+
+    def _isValidExtension(self, extension):
+        if len(extension) in range(1,5) and extension not in self.allowed_filetypes:
+            return False
+        else:
+            return True
+
     def findInDirectory(self, directory):
         #open the directory containing all of the movies.
         #Need to do sanity check here
@@ -97,93 +102,95 @@ class MovieMatcher:
 
                 movie_title = matchObj.group()
 
-                #extract file extension if it exists
-                try:
-                    (movie_title, extension) = movie_title.rsplit( ".", 1 )
-                except:
-                    extension = ""
+                (movie_title, extension) = self._getFileExtension(movie_title)
 
-                #if the file extension does not exist or is allowed we add the movie to the list
-                if len(extension) in range(1,5) and extension not in allowed_filetypes:
-                    #print "Ignoring Film: %s" % movie_title
-                    self.ignoreMovie(movie_title+"."+extension)
-                else:
-                    movie_title = removeTrailingNumber(movie_title)
+                #if the file extension doesn't exist or is allowed then we add the movie to the list
+                if self._isValidExtension(extension):
+                    movie_title = self._removeTrailingNumber(movie_title)
                     self.addMovie(movie_title)
                     #print movie_title
+                else:
+                    #print "Ignoring Film: %s" % movie_title
+                    self.ignoreMovie(movie_title+"."+extension)
 
-
-
-
-#If the last four chars of a string are a number, remove them
-#This might cause a problem with some movies...
-def removeTrailingNumber(string):
-    last4chars = string[-4:]
-    if last4chars.isdigit():
-        #remove the string
-        return string[:-4]
-    else:
-        #keep the whole string
-        return string
-
-def lookupTitleOnIMDB(movies_list):
+class MovieLookUp:
 
     #dictionary of movies with all details from IMDB
     #key is the title
     #value is the list of attributes from IMDB
     movie_dict = {}
-    
+
     #structure for storing movies which we couldn't find information on (helpful so you can see why the information wasn't found)
     not_found_dict = {}
 
-    #Loop through the potential movies in the list
-    count = 0   #keep a count of the number of items we have checked...
-    while (count < LIMIT and count < len(movies_list)):
+    def __init__(self, limit=1000):
+        self.limit = limit
 
-        #Replace spaces with a + (so it's a valid url)
-        title = movies_list[count].replace(' ','+')
+    #Sorts the found movie data by the imdb rating value
+    #NOTE: lookupTitles() must be called before this can be useful
+    def sortMovieData(self):
+        #sort our movie dictionary by their IMDB rating value.
+        self.movie_dict = sorted(self.movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v['imdbRating'],k))
 
-        #should probably check for special html chars (& etc) too...
+    def addMovie(self, title, data):
+        self.movie_dict[title] = data
 
-        #Get the year using the regex later if needed (it seems to be quite successful without it)
-        year = ""
+    def addNotFoundMovie(self, title, data):
+        self.not_found_dict[title] = data
 
-        #Generate the URL of the api lookup for each movie title
-        url = 'http://www.imdbapi.com/?t=%s&y=%s' % (title, year)
-        #print url
+    def getFoundMovieData(self):
+        return self.movie_dict
 
-        #Try and get a json response from the URL...
-        try:
-            data = urllib2.urlopen(url).read()
-        except urllib2.HTTPError, e:
-            print "HTTP error: %d" % e.code
-            exit()
-        except urllib2.URLError, e:
-            print "Network error: %s" % e.reason
-            exit()
+    def getNotFoundMovieData(self):
+        return self.not_found_dict
 
-        #It looks like the lookup returned something...
-        json_movie_data = json.loads(data, encoding="utf-8")
-        #print json_movie_data
+    #I'm using this api for now, but you could change this potentially...
+    def _getApiUrl(self, title, year):
+        return "http://www.imdbapi.com/?t=%s&y=%s" % (title, year)
 
-        #Check if it found anything useful
-        if json_movie_data['Response']  == "True": #probably not the best way to check this...
-            
-            #print "Found Movie: %s" % title
-            print "Found Movie: %s" % json_movie_data['Title']
-            movie_dict[json_movie_data['Title']]     = json_movie_data
-            #json_movie_data keys include: imdbRating, title, year, rated, released, director...
+    def lookupTitles(self, movieTitle, year=""):
 
-        else:
-            print "Couldn't Find: %s" % title
-            not_found_dict[movies_list[count]]     = json_movie_data
+        #Loop through the potential movies in the list
+        count = 0   #keep a count of the number of items we have checked...
+        while (count < self.limit and count < len(movieTitle)):
 
-        count += 1
+            #Replace spaces with a + (so it's a valid url)
+            title = movieTitle[count].replace(' ','+')
 
-    #sort our movie dictionary by their IMDB rating value.
-    movie_dict = sorted(movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v['imdbRating'],k))
+            #should probably check for special html chars (& etc) too...
 
-    return (movie_dict, not_found_dict)
+            #Generate the URL of the api lookup for each movie title
+            url = self._getApiUrl(title, year)
+            #print url
+
+            #Try and get a json response from the URL...
+            try:
+                data = urllib2.urlopen(url).read()
+            except urllib2.HTTPError, e:
+                print "HTTP error: %d" % e.code
+                exit()
+            except urllib2.URLError, e:
+                print "Network error: %s" % e.reason
+                exit()
+
+            #It looks like the lookup returned something...
+            json_movie_data = json.loads(data, encoding="utf-8")
+            #print json_movie_data
+
+            #Check if it found anything useful
+            if json_movie_data['Response']  == "True": #probably not the best way to check this...
+                
+                #print "Found Movie: %s" % title
+                print "Found Movie: %s" % json_movie_data['Title']
+                self.addMovie(json_movie_data['Title'], json_movie_data)
+                #json_movie_data keys include: imdbRating, title, year, rated, released, director...
+
+            else:
+                print "Couldn't Find: %s" % title
+                self.addNotFoundMovie(movieTitle[count], json_movie_data)
+
+            count += 1
+
 
 #####################################################
 #Function to produce some simple output
@@ -223,27 +230,55 @@ def simpleOutput(movie_dict, not_found_dict, ignored_movie_list):
 #####################################################
 if __name__ == '__main__':
 
+    #####################################################
+    #Set up the command line arguments
+    #####################################################
+    parser = argparse.ArgumentParser(description='Movie Info')
+    parser.add_argument('-dir', '-d', required=True,
+                       help='The directory where your movies are stored')
+    parser.add_argument('-limit', '-l', type=int, nargs='?', default=1000, required=False,
+                       help='The maximum number of movies to search through')
+    parser.add_argument('-html','-o', default=False, required=False, action='store_true', 
+                       help='Output in HTML')
+    parser.add_argument('-v', action='version', version='%(prog)s 0.5')
+    args = vars(parser.parse_args())
+    #####################################################
+
+    #get our command line arguments as variables
+    MOVIE_DIR = args['dir']
+    HTML_OUTPUT = args['html']
+    LIMIT = args['limit']
+
+    #set the timeout
+    socket.setdefaulttimeout(timeout)
+
+    #####################################################
+
+    #Match files in the given directory
     moviematcher = MovieMatcher(movie_match_regex, allowed_filetypes)
     moviematcher.findInDirectory(MOVIE_DIR)
 
     movies_list = moviematcher.getMovieList()
     ignored_movie_list = moviematcher.getIgnoredList()
 
-    #print "%d items matched in directory!" % len(movies_list)
+    #Lookup successful matches
+    movielookup = MovieLookUp()
+    movielookup.lookupTitles(movies_list)
 
-    (movie_dict, not_found_dict) = lookupTitleOnIMDB(movies_list)
+    movielookup.sortMovieData()
 
+    movie_dict = movielookup.getFoundMovieData()
+    not_found_dict = movielookup.getNotFoundMovieData()
 
-    #####################################################
-    #Output
-    #####################################################
+    #Output the data
     if HTML_OUTPUT:
 
         template_env = Environment(loader=FileSystemLoader(template_directory),trim_blocks=True)
         
         print template_env.get_template('main.html').render(
             movie_dict=movie_dict,
-            not_found_dict=not_found_dict
+            not_found_dict=not_found_dict,
+            ignored_movie_list=ignored_movie_list,
         )
     else:
         simpleOutput(movie_dict, not_found_dict, ignored_movie_list)
