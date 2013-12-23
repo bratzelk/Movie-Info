@@ -52,23 +52,66 @@ MOVIE_DIR = args['dir']
 HTML_OUTPUT = args['html']
 LIMIT = args['limit']
 
-#stores a list of titles from the local drive which were match in the given directory
-movies_list = []
 
-#A list of items which were ignored due to their file extension (not really used for anything)
-ignored_movie_list = []
 
-#dictionary of movies with all details from IMDB
-#key is the title
-#value is the list of attributes from IMDB
-movie_dict = {}
+#
+class MovieMatcher:
 
-#structure for storing movies which we couldn't find information on (helpful so you can see why the information wasn't found)
-not_found_dict = {}
+    #stores a list of titles from the local drive which were match in the given directory
+    movie_list = []
+    #A list of items which were ignored due to their file extension (not really used for anything)
+    ignored_movie_list = []
 
-#open the directory containing all of the movies.
-#Need to do sanity check here
-os.chdir(MOVIE_DIR)
+    def __init__(self, regexmatch="^[^.][A-Za-z0-9\.' -]+$",allowedfiletypes=["tmp","avi","mpg","mpeg","mkv"]):
+        self.movie_list = []
+        self.ignored_movie_list = []
+
+        self.movie_match_regex = regexmatch
+        self.allowed_filetypes = allowedfiletypes
+
+    def addMovie(self, movie):
+        self.movie_list.append(movie)
+
+    def ignoreMovie(self, movie):
+        self.ignored_movie_list.append(movie)
+
+    def getMovieList(self):
+        return self.movie_list
+
+    def getIgnoredList(self):
+        return self.ignored_movie_list
+
+    def findInDirectory(self, directory):
+        #open the directory containing all of the movies.
+        #Need to do sanity check here
+        os.chdir(directory)
+
+        #go through everything in the current folder
+        for files in os.listdir("."):
+
+            #Match our regex against everything in the folder
+            matchObj = re.match( movie_match_regex , files.lower())
+
+            #Add all items which matched the pattern to our list to lookup later
+            if matchObj:
+
+                movie_title = matchObj.group()
+
+                #extract file extension if it exists
+                try:
+                    (movie_title, extension) = movie_title.rsplit( ".", 1 )
+                except:
+                    extension = ""
+
+                #if the file extension does not exist or is allowed we add the movie to the list
+                if len(extension) in range(1,5) and extension not in allowed_filetypes:
+                    #print "Ignoring Film: %s" % movie_title
+                    self.ignoreMovie(movie_title+"."+extension)
+                else:
+                    movie_title = removeTrailingNumber(movie_title)
+                    self.addMovie(movie_title)
+                    #print movie_title
+
 
 
 
@@ -83,76 +126,15 @@ def removeTrailingNumber(string):
         #keep the whole string
         return string
 
-#####################################################
-#Function to produce some simple output
-#####################################################
-def simpleOutput(movie_dict, not_found_dict, ignored_movie_list):
-    print "---------------------------------------"
-    print "Movie Info By Kim Bratzel (Simple Output)"
-    print "---------------------------------------"
-    print "%d item(s) matched in directory!" % (len(movie_dict) + len(not_found_dict))
-    print "%d movie(s) which we found!" % len(movie_dict)
-    print "%d movie(s) which we couldn't find!" % len(not_found_dict)
-    print "%d file(s) which we totally ignored!" % len(ignored_movie_list)
+def lookupTitleOnIMDB(movies_list):
 
-    #Print movies which we found
-    print "---------------------------------------"
-    print "Movies which we found data for:\n"
-    #The second part of this sorts in order of highest IMDB rating
-    for (current_movie,data) in movie_dict:
-            print "-- %32s \t\t %s " % (current_movie, data['imdbRating'])
-
-    print "---------------------------------------"
-    print "Items which we found NO data for:\n"
-    #Print movies which couldn't be found
-    for (current_movie,data) in not_found_dict.iteritems():
-            print "-- %32s " % current_movie
-    print "---------------------------------------"
-
-    print "Items which we ignored:\n"
-    #Print movies which couldn't be found
-    for (ignored) in ignored_movie_list:
-            print "-- %32s " % ignored
-    print "---------------------------------------"
-    print "Done."
-
-
-#####################################################
-#Run the program
-#####################################################
-if __name__ == '__main__':
-
-    #go through everything in the current folder
-    for files in os.listdir("."):
-
-            #should probably ignore files which aren't the correct type and aren't a directory
-
-
-            #Match our regex against everything in the folder
-            matchObj = re.match( movie_match_regex , files.lower())
-
-            #Add all items which matched the pattern to our list to lookup later
-            if matchObj:
-
-                movie_title = matchObj.group()
-
-
-                #extract file extension if it exists
-                try:
-                    (movie_title, extension) = movie_title.rsplit( ".", 1 )
-                except:
-                    extension = ""
-
-                #if the file extension does not exist or is allowed we add the movie to the list
-                if len(extension) in range(1,5) and extension not in allowed_filetypes:
-                    #print "Ignoring Film: %s" % movie_title
-                    ignored_movie_list.append(movie_title+"."+extension)
-                else:
-                    movie_title = removeTrailingNumber(movie_title)
-                    movies_list.append(movie_title)
-                    #print movie_title
-
-    #print "%d items matched in directory!" % len(movies_list)
+    #dictionary of movies with all details from IMDB
+    #key is the title
+    #value is the list of attributes from IMDB
+    movie_dict = {}
+    
+    #structure for storing movies which we couldn't find information on (helpful so you can see why the information wasn't found)
+    not_found_dict = {}
 
     #Loop through the potential movies in the list
     count = 0   #keep a count of the number of items we have checked...
@@ -201,9 +183,59 @@ if __name__ == '__main__':
     #sort our movie dictionary by their IMDB rating value.
     movie_dict = sorted(movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v['imdbRating'],k))
 
+    return (movie_dict, not_found_dict)
+
+#####################################################
+#Function to produce some simple output
+#####################################################
+def simpleOutput(movie_dict, not_found_dict, ignored_movie_list):
+    print "---------------------------------------"
+    print "Movie Info By Kim Bratzel (Simple Output)"
+    print "---------------------------------------"
+    print "%d item(s) matched in directory!" % (len(movie_dict) + len(not_found_dict))
+    print "%d movie(s) which we found!" % len(movie_dict)
+    print "%d movie(s) which we couldn't find!" % len(not_found_dict)
+    print "%d file(s) which we totally ignored!" % len(ignored_movie_list)
+
+    #Print movies which we found
+    print "---------------------------------------"
+    print "Movies which we found data for:\n"
+    #The second part of this sorts in order of highest IMDB rating
+    for (current_movie,data) in movie_dict:
+            print "-- %32s \t\t %s " % (current_movie, data['imdbRating'])
+
+    print "---------------------------------------"
+    print "Items which we found NO data for:\n"
+    #Print movies which couldn't be found
+    for (current_movie,data) in not_found_dict.iteritems():
+            print "-- %32s " % current_movie
+    print "---------------------------------------"
+
+    print "Items which we ignored:\n"
+    #Print movies which couldn't be found
+    for (ignored) in ignored_movie_list:
+            print "-- %32s " % ignored
+    print "---------------------------------------"
+    print "Done."
+
+#####################################################
+#Run the program
+#####################################################
+if __name__ == '__main__':
+
+    moviematcher = MovieMatcher(movie_match_regex, allowed_filetypes)
+    moviematcher.findInDirectory(MOVIE_DIR)
+
+    movies_list = moviematcher.getMovieList()
+    ignored_movie_list = moviematcher.getIgnoredList()
+
+    #print "%d items matched in directory!" % len(movies_list)
+
+    (movie_dict, not_found_dict) = lookupTitleOnIMDB(movies_list)
+
 
     #####################################################
-    #HTML Output
+    #Output
     #####################################################
     if HTML_OUTPUT:
 
@@ -213,11 +245,6 @@ if __name__ == '__main__':
             movie_dict=movie_dict,
             not_found_dict=not_found_dict
         )
-
-
-    #####################################################
-    #Simple Output
-    #####################################################
     else:
         simpleOutput(movie_dict, not_found_dict, ignored_movie_list)
 
