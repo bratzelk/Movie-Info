@@ -24,7 +24,7 @@ timeout = 5
 allowed_filetypes = ["tmp","avi","mpg","mpeg","mkv"]
 
 #The regex pattern used to match movie names
-movie_match_regex = "^[^.][A-Za-z0-9\.' -]+$"
+movie_match_regex = "^[^.].+$"
 
 #The directory where the html templates are stored
 template_directory = os.path.dirname(os.path.abspath(__file__)) + "/templates"
@@ -41,17 +41,17 @@ class MovieMatcher:
     #A list of items which were ignored due to their file extension (not really used for anything)
     ignored_movie_list = []
 
-    def __init__(self, regexmatch="^[^.][A-Za-z0-9\.' -]+$",allowedfiletypes=["tmp","avi","mpg","mpeg","mkv"]):
+    def __init__(self, regexmatch,allowedfiletypes):
         self.movie_list = []
         self.ignored_movie_list = []
 
         self.movie_match_regex = regexmatch
         self.allowed_filetypes = allowedfiletypes
 
-    def addMovie(self, movie):
+    def _addMovie(self, movie):
         self.movie_list.append(movie)
 
-    def ignoreMovie(self, movie):
+    def _ignoreMovie(self, movie):
         self.ignored_movie_list.append(movie)
 
     def getMovieList(self):
@@ -71,8 +71,8 @@ class MovieMatcher:
             #keep the whole string
             return string
 
+    #extract file extension from the filename, if it exists
     def _getFileExtension(self, fullFileName):
-        #extract file extension if it exists
         try:
             (filename, extension) = fullFileName.rsplit( ".", 1 )
         except:
@@ -80,16 +80,21 @@ class MovieMatcher:
             extension = ""
         return (filename, extension)
 
+    #check if a file extension is in our allowed list
     def _isValidExtension(self, extension):
         if len(extension) in range(1,5) and extension not in self.allowed_filetypes:
             return False
         else:
             return True
 
+    #find movies in a directory which match our rules
     def findInDirectory(self, directory):
         #open the directory containing all of the movies.
-        #Need to do sanity check here
-        os.chdir(directory)
+        try: #could also use: os.path.isdir()
+            os.chdir(directory)
+        except:
+            print "Error: Directory, %s does not exist!" % (directory)
+            exit()
 
         #go through everything in the current folder
         for files in os.listdir("."):
@@ -107,11 +112,11 @@ class MovieMatcher:
                 #if the file extension doesn't exist or is allowed then we add the movie to the list
                 if self._isValidExtension(extension):
                     movie_title = self._removeTrailingNumber(movie_title)
-                    self.addMovie(movie_title)
+                    self._addMovie(movie_title)
                     #print movie_title
                 else:
                     #print "Ignoring Film: %s" % movie_title
-                    self.ignoreMovie(movie_title+"."+extension)
+                    self._ignoreMovie(movie_title+"."+extension)
 
 class MovieLookUp:
 
@@ -132,7 +137,7 @@ class MovieLookUp:
         #sort our movie dictionary by their IMDB rating value.
         self.movie_dict = sorted(self.movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v['imdbRating'],k))
 
-    def addMovie(self, title, data):
+    def _addMovie(self, title, data):
         self.movie_dict[title] = data
 
     def addNotFoundMovie(self, title, data):
@@ -145,23 +150,24 @@ class MovieLookUp:
         return self.not_found_dict
 
     #I'm using this api for now, but you could change this potentially...
-    def _getApiUrl(self, title, year):
+    def _getApiUrl(self, title, year=""):
         return "http://www.imdbapi.com/?t=%s&y=%s" % (title, year)
 
-    def lookupTitles(self, movieTitle, year=""):
+    def _makeUrlFriendlyTitle(self, title):
+        return title.replace(' ','+')
+
+    def lookupTitles(self, movieTitles):
 
         #Loop through the potential movies in the list
         count = 0   #keep a count of the number of items we have checked...
-        while (count < self.limit and count < len(movieTitle)):
+        while (count < self.limit and count < len(movieTitles)):
 
             #Replace spaces with a + (so it's a valid url)
-            title = movieTitle[count].replace(' ','+')
-
-            #should probably check for special html chars (& etc) too...
+            title = self._makeUrlFriendlyTitle(movieTitles[count])
 
             #Generate the URL of the api lookup for each movie title
-            url = self._getApiUrl(title, year)
-            #print url
+            #you could optionally add the year as a second parameter to get better results...
+            url = self._getApiUrl(title)
 
             #Try and get a json response from the URL...
             try:
@@ -179,15 +185,12 @@ class MovieLookUp:
 
             #Check if it found anything useful
             if json_movie_data['Response']  == "True": #probably not the best way to check this...
-                
-                #print "Found Movie: %s" % title
-                print "Found Movie: %s" % json_movie_data['Title']
-                self.addMovie(json_movie_data['Title'], json_movie_data)
+                #print "Found Movie: %s" % json_movie_data['Title']
+                self._addMovie(json_movie_data['Title'], json_movie_data)
                 #json_movie_data keys include: imdbRating, title, year, rated, released, director...
-
             else:
-                print "Couldn't Find: %s" % title
-                self.addNotFoundMovie(movieTitle[count], json_movie_data)
+                #print "Couldn't Find: %s" % title
+                self.addNotFoundMovie(movieTitles[count], json_movie_data)
 
             count += 1
 
