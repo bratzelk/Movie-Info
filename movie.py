@@ -21,48 +21,23 @@ timeout = 5
 
 #a list of filetypes to match (it will also match directory names)
 #filetypes = "tmp|avi|mpg|mpeg|mkv"
-allowed_filetypes = ["tmp","avi","mpg","mpeg","mkv"]
+allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv"]
 
 #The regex pattern used to match movie names
-movie_match_regex = "^[^.].+$"
+movieMatchRegex = "^[^.].+$"
 
 #The directory where the html templates are stored
-template_directory = os.path.dirname(os.path.abspath(__file__)) + "/templates"
+templateDirectory = os.path.dirname(os.path.abspath(__file__)) + "/templates"
 
 #####################################################
 
-
-
-#
-class MovieMatcher:
-
-    #stores a list of titles from the local drive which were match in the given directory
-    movie_list = []
-    #A list of items which were ignored due to their file extension (not really used for anything)
-    ignored_movie_list = []
-
-    def __init__(self, regexmatch,allowedfiletypes):
-        self.movie_list = []
-        self.ignored_movie_list = []
-
-        self.movie_match_regex = regexmatch
-        self.allowed_filetypes = allowedfiletypes
-
-    def _addMovie(self, movie):
-        self.movie_list.append(movie)
-
-    def _ignoreMovie(self, movie):
-        self.ignored_movie_list.append(movie)
-
-    def getMovieList(self):
-        return self.movie_list
-
-    def getIgnoredList(self):
-        return self.ignored_movie_list
+class Normaliser:
+    def __init__(self):
+        pass
 
     #If the last four chars of a string are a number, remove them
     #This might cause a problem with some movies...
-    def _removeTrailingNumber(self, string):
+    def removeTrailingNumber(self, string):
         last4chars = string[-4:]
         if last4chars.isdigit():
             #remove the string
@@ -70,6 +45,43 @@ class MovieMatcher:
         else:
             #keep the whole string
             return string
+
+    def normalise(self, string):
+        return string.lower()
+
+    def normaliseList(self, list):
+        newList = []
+        for item in list:
+            newList.append(self.normalise(item))
+
+#This creates a list of directories and filenames which match a regex within a single directory
+#it creates a list of matched filenames/directories and list of ignored, or unmatched filenames/directories
+class Matcher:
+
+    #stores a list of titles from the local drive which were match in the given directory
+    matchList = []
+    #A list of items which were ignored due to their file extension (not really used for anything)
+    ignoredList = []
+
+    def __init__(self, matchRegex,allowedFiletypes):
+        self.matchList = []
+        self.ignoredList = []
+
+        self.matchRegex = matchRegex
+        self.allowedFiletypes = allowedFiletypes
+
+    def _addMatch(self, item):
+        self.matchList.append(item)
+
+    def _ignore(self, item):
+        self.ignoredList.append(item)
+
+    def getMatches(self):
+        return self.matchList
+
+    def getIgnored(self):
+        return self.ignoredList
+
 
     #extract file extension from the filename, if it exists
     def _getFileExtension(self, fullFileName):
@@ -82,14 +94,14 @@ class MovieMatcher:
 
     #check if a file extension is in our allowed list
     def _isValidExtension(self, extension):
-        if len(extension) in range(1,5) and extension not in self.allowed_filetypes:
+        if len(extension) in range(1,5) and extension.lower() not in self.allowedFiletypes:
             return False
         else:
             return True
 
-    #find movies in a directory which match our rules
+    #find items in a directory which match our rules
     def findInDirectory(self, directory):
-        #open the directory containing all of the movies.
+        #open the directory containing all of the matches.
         try: #could also use: os.path.isdir()
             os.chdir(directory)
         except:
@@ -100,33 +112,32 @@ class MovieMatcher:
         for files in os.listdir("."):
 
             #Match our regex against everything in the folder
-            matchObj = re.match( movie_match_regex , files.lower())
+            matchObj = re.match( self.matchRegex , files)
 
             #Add all items which matched the pattern to our list to lookup later
             if matchObj:
 
-                movie_title = matchObj.group()
+                item = matchObj.group()
 
-                (movie_title, extension) = self._getFileExtension(movie_title)
+                (item, extension) = self._getFileExtension(item)
 
                 #if the file extension doesn't exist or is allowed then we add the movie to the list
                 if self._isValidExtension(extension):
-                    movie_title = self._removeTrailingNumber(movie_title)
-                    self._addMovie(movie_title)
-                    #print movie_title
+                    self._addMatch(item)
+                    #print item
                 else:
-                    #print "Ignoring Film: %s" % movie_title
-                    self._ignoreMovie(movie_title+"."+extension)
+                    #print "Ignoring Item: %s" % item
+                    self._ignore(item+"."+extension)
 
 class MovieLookUp:
 
     #dictionary of movies with all details from IMDB
     #key is the title
     #value is the list of attributes from IMDB
-    movie_dict = {}
+    movieData = {}
 
     #structure for storing movies which we couldn't find information on (helpful so you can see why the information wasn't found)
-    not_found_dict = {}
+    notFoundData = {}
 
     def __init__(self, limit=1000):
         self.limit = limit
@@ -135,19 +146,19 @@ class MovieLookUp:
     #NOTE: lookupTitles() must be called before this can be useful
     def sortMovieData(self):
         #sort our movie dictionary by their IMDB rating value.
-        self.movie_dict = sorted(self.movie_dict.iteritems(), reverse=True, key=lambda (k,v): (v['imdbRating'],k))
+        self.movieData = sorted(self.movieData.iteritems(), reverse=True, key=lambda (k,v): (v['imdbRating'],k))
 
     def _addMovie(self, title, data):
-        self.movie_dict[title] = data
+        self.movieData[title] = data
 
     def addNotFoundMovie(self, title, data):
-        self.not_found_dict[title] = data
+        self.notFoundData[title] = data
 
     def getFoundMovieData(self):
-        return self.movie_dict
+        return self.movieData
 
     def getNotFoundMovieData(self):
-        return self.not_found_dict
+        return self.notFoundData
 
     #I'm using this api for now, but you could change this potentially...
     def _getApiUrl(self, title, year=""):
@@ -171,7 +182,7 @@ class MovieLookUp:
 
             #Try and get a json response from the URL...
             try:
-                data = urllib2.urlopen(url).read()
+                lookupData = urllib2.urlopen(url).read()
             except urllib2.HTTPError, e:
                 print "HTTP error: %d" % e.code
                 exit()
@@ -180,17 +191,16 @@ class MovieLookUp:
                 exit()
 
             #It looks like the lookup returned something...
-            json_movie_data = json.loads(data, encoding="utf-8")
-            #print json_movie_data
+            jsonLookupData = json.loads(lookupData, encoding="utf-8")
 
             #Check if it found anything useful
-            if json_movie_data['Response']  == "True": #probably not the best way to check this...
+            if jsonLookupData['Response']  == "True": #probably not the best way to check this...
                 #print "Found Movie: %s" % json_movie_data['Title']
-                self._addMovie(json_movie_data['Title'], json_movie_data)
-                #json_movie_data keys include: imdbRating, title, year, rated, released, director...
+                self._addMovie(jsonLookupData['Title'], jsonLookupData)
+                #jsonLookupData keys include: imdbRating, title, year, rated, released, director...
             else:
                 #print "Couldn't Find: %s" % title
-                self.addNotFoundMovie(movieTitles[count], json_movie_data)
+                self.addNotFoundMovie(movieTitles[count], jsonLookupData)
 
             count += 1
 
@@ -198,35 +208,34 @@ class MovieLookUp:
 #####################################################
 #Function to produce some simple output
 #####################################################
-def simpleOutput(movie_dict, not_found_dict, ignored_movie_list):
+def simpleOutput(movieLookupData, failedLookups, unMatched):
     print "---------------------------------------"
     print "Movie Info By Kim Bratzel (Simple Output)"
     print "---------------------------------------"
-    print "%d item(s) matched in directory!" % (len(movie_dict) + len(not_found_dict))
-    print "%d movie(s) which we found!" % len(movie_dict)
-    print "%d movie(s) which we couldn't find!" % len(not_found_dict)
-    print "%d file(s) which we totally ignored!" % len(ignored_movie_list)
+    print "%d item(s) matched in directory!" % (len(movieLookupData) + len(failedLookups))
+    print "%d movie(s) which we found!" % len(movieLookupData)
+    print "%d movie(s) which we couldn't find!" % len(failedLookups)
+    print "%d file(s) which we totally ignored!" % len(unMatched)
 
     #Print movies which we found
     print "---------------------------------------"
     print "Movies which we found data for:\n"
     #The second part of this sorts in order of highest IMDB rating
-    for (current_movie,data) in movie_dict:
+    for (current_movie,data) in movieLookupData:
             print "-- %32s \t\t %s " % (current_movie, data['imdbRating'])
 
     print "---------------------------------------"
     print "Items which we found NO data for:\n"
     #Print movies which couldn't be found
-    for (current_movie,data) in not_found_dict.iteritems():
+    for (current_movie,data) in failedLookups.iteritems():
             print "-- %32s " % current_movie
     print "---------------------------------------"
 
     print "Items which we ignored:\n"
     #Print movies which couldn't be found
-    for (ignored) in ignored_movie_list:
+    for (ignored) in unMatched:
             print "-- %32s " % ignored
     print "---------------------------------------"
-    print "Done."
 
 #####################################################
 #Run the program
@@ -258,31 +267,41 @@ if __name__ == '__main__':
     #####################################################
 
     #Match files in the given directory
-    moviematcher = MovieMatcher(movie_match_regex, allowed_filetypes)
-    moviematcher.findInDirectory(MOVIE_DIR)
+    matcher = Matcher(movieMatchRegex, allowedFiletypes)
+    matcher.findInDirectory(MOVIE_DIR)
 
-    movies_list = moviematcher.getMovieList()
-    ignored_movie_list = moviematcher.getIgnoredList()
+    movieMatches = matcher.getMatches()
+    unMatched = matcher.getIgnored()
+
+    #normalise the matches
+    normalisedMovieMatches = []
+    normaliser = Normaliser()
+    for item in movieMatches:
+        normalisedItem = item
+        normalisedItem = normaliser.removeTrailingNumber(normalisedItem)
+        normalisedItem = normaliser.normalise(normalisedItem)
+        normalisedMovieMatches.append(normalisedItem)
+
 
     #Lookup successful matches
     movielookup = MovieLookUp()
-    movielookup.lookupTitles(movies_list)
+    movielookup.lookupTitles(normalisedMovieMatches)
 
     movielookup.sortMovieData()
 
-    movie_dict = movielookup.getFoundMovieData()
-    not_found_dict = movielookup.getNotFoundMovieData()
+    movieLookupData = movielookup.getFoundMovieData()
+    failedLookups = movielookup.getNotFoundMovieData()
 
     #Output the data
     if HTML_OUTPUT:
 
-        template_env = Environment(loader=FileSystemLoader(template_directory),trim_blocks=True)
+        template_env = Environment(loader=FileSystemLoader(templateDirectory),trim_blocks=True)
         
         print template_env.get_template('main.html').render(
-            movie_dict=movie_dict,
-            not_found_dict=not_found_dict,
-            ignored_movie_list=ignored_movie_list,
+            movieLookupData=movieLookupData,
+            failedLookups=failedLookups,
+            unMatched=unMatched,
         )
     else:
-        simpleOutput(movie_dict, not_found_dict, ignored_movie_list)
+        simpleOutput(movieLookupData, failedLookups, unMatched)
 

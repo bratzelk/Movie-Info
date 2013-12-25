@@ -7,14 +7,14 @@ from movie import *
 
 class TestSequenceFunctions(unittest.TestCase):
 
-    allowed_filetypes = ["tmp","avi","mpg","mpeg","mkv"]
-    movie_match_regex = "^[^.].+$"
+    allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv"]
+    matchRegex = "^[^.].+$"
 
     def setUp(self):
-        self.moviematcher = MovieMatcher(movie_match_regex, allowed_filetypes)
+        self.matcher = Matcher(self.matchRegex, self.allowedFiletypes)
 
     def test_file_extension(self):
-        is_valid_extension = self.moviematcher._isValidExtension("avi")
+        is_valid_extension = self.matcher._isValidExtension("avi")
         self.assertTrue(is_valid_extension)
 
 

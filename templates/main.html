@@ -15,9 +15,10 @@
     <h1>Movie Info - Output</h1>
 
     <div>
-    {{ (movie_dict|length) + (not_found_dict|length) }} items matched in directory!<br />
-    {{ (movie_dict|length) }} movies which we found!<br />
-    {{ (not_found_dict|length) }} movies which we couldn't find!<br />
+    {{ (movieLookupData|length) + (failedLookups|length) }} items matched in directory!<br />
+    {{ (movieLookupData|length) }} movies which we found!<br />
+    {{ (failedLookups|length) }} movies which we couldn't find!<br />
+    {{ (unMatched|length) }} file(s) which we totally ignored!<br />
     <br />
     </div>
 
@@ -30,7 +31,7 @@
     {% block content %}
 
     <tbody>
-        {% for (current_movie,data) in movie_dict %}
+        {% for (current_movie,data) in movieLookupData %}
 
             <tr>
             <td><img src="{{ data['Poster'] }}" class="cover" /></td>
