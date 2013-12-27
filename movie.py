@@ -9,6 +9,7 @@ import urllib2
 import socket
 import re
 import argparse
+import time
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -20,7 +21,7 @@ from jinja2 import Environment, FileSystemLoader
 timeout = 5
 
 #a list of filetypes to match (it will also match directory names)
-#filetypes = "tmp|avi|mpg|mpeg|mkv"
+#these are case insensitive
 allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv"]
 
 #The regex pattern used to match movie names
@@ -68,6 +69,7 @@ class Matcher:
         self.ignoredList = []
 
         self.matchRegex = matchRegex
+
         self.allowedFiletypes = allowedFiletypes
 
     def _addMatch(self, item):
@@ -94,7 +96,9 @@ class Matcher:
 
     #check if a file extension is in our allowed list
     def _isValidExtension(self, extension):
-        if len(extension) in range(1,5) and extension.lower() not in self.allowedFiletypes:
+        #force all lowercase file extensions
+        allowedFiletypes = map(lambda x:x.lower(), self.allowedFiletypes)
+        if len(extension) in range(1,5) and extension.lower() not in allowedFiletypes:
             return False
         else:
             return True
@@ -301,6 +305,7 @@ if __name__ == '__main__':
             movieLookupData=movieLookupData,
             failedLookups=failedLookups,
             unMatched=unMatched,
+            dateTime = time.strftime("%c"),
         )
     else:
         simpleOutput(movieLookupData, failedLookups, unMatched)

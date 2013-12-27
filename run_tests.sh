@@ -1,18 +1,20 @@
-echo "Running Test 01"
-python ./tests/test01.py
+printf "Movie Info Test Suite \n\n"
+
+printf "Running Unit Tests...\n"
+python ./tests/unitTests.py
 
 
-echo "Checking Internet Connection..."
+printf "\nChecking Internet Connection...\n"
 curl -D- -s http://www.google.com > /dev/null
 if [[ $? == 0 ]]; then
-    echo "Working!"
+    printf "Working!\n"
 else
-    echo "Connection Failed!"
-    echo "Exiting Tests."
+    printf "Connection Failed!\n"
+    printf "Exiting Tests.\n"
     exit 1
 fi
 
-echo "Checking for movies..."
-python movie.py -d ./tests/test01 -limit 500
+printf "\nChecking for movies...\n"
+python movie.py -d ./tests/testMovieDirectory -limit 500
 
-echo "Done!"
+printf "\nDone!\n"

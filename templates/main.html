@@ -2,53 +2,64 @@
 
     <head>
     <title>Movie Info Output</title>
+
     <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="_html_files/scripts/jquery.dataTables.js"></script>
     <script type="text/javascript" charset="utf-8" src="_html_files/scripts/scripts.js"></script>
 
     <style type="text/css" >@import "_html_files/css/style.css";</style>
     <style type="text/css">@import "_html_files/css/table.css";</style>
+
     </head>
 
     <body>
 
-    <h1>Movie Info - Output</h1>
+    <div class="container">
 
-    <div>
-    {{ (movieLookupData|length) + (failedLookups|length) }} items matched in directory!<br />
-    {{ (movieLookupData|length) }} movies which we found!<br />
-    {{ (failedLookups|length) }} movies which we couldn't find!<br />
-    {{ (unMatched|length) }} file(s) which we totally ignored!<br />
-    <br />
+        <h1>Movie Info - Output</h1>
+
+        <div id="info-box">
+            Generated On: {{ dateTime }}<br />
+            {{ (movieLookupData|length) + (failedLookups|length) }} items matched in directory!<br />
+            {{ (movieLookupData|length) }} movies which we found!<br />
+            {{ (failedLookups|length) }} movies which we couldn't find!<br />
+            {{ (unMatched|length) }} file(s) which we totally ignored!<br />
+        </div>
+
+        <table id="movie-table" class="display">
+
+            <thead>
+                <tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Rated</th> <th>Link</th> </tr>
+            </thead>
+
+            {% block content %}
+
+            <tbody>
+
+                {% for (current_movie,data) in movieLookupData %}
+
+                    <tr>
+                    <td><img src="{{ data['Poster'] }}" class="cover" /></td>
+                    <td>{{ data['Title'] }}</td>  
+                    <td>{{ data['imdbRating'] }}</td>
+                    <td>{{ data['Released'][-4:] }}</td>
+                    <td>{{ data['Rated'] }}</td>
+                    <td><a href="http://imdb.com/title/{{ data['imdbID'] }}">Click Here</a></td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+            {% endblock %}
+
+        </table>
+
+        <div class="footer">
+            &copy; Kim Bratzel 2014
+        </div>
+
     </div>
-
-    <table border="1" id="movie_table" class="display">
-
-    <thead>
-    <tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Rated</th> <th>Link</th> </tr>
-    </thead>
-
-    {% block content %}
-
-    <tbody>
-        {% for (current_movie,data) in movieLookupData %}
-
-            <tr>
-            <td><img src="{{ data['Poster'] }}" class="cover" /></td>
-            <td>{{ data['Title'] }}</td>  
-            <td>{{ data['imdbRating'] }}</td>
-            <td>{{ data['Released'][-4:] }}</td>
-            <td>{{ data['Rated'] }}</td>
-            <td><a href="http://imdb.com/title/{{ data['imdbID'] }}">Click Here</a></td>
-            </tr>
-
-        {% endfor %}
-
-    </tbody>
-
-    {% endblock %}
-
-    </table>
 
     </body>
     </html>

@@ -1,5 +1,5 @@
 $(document).ready( function () {
-    $('#movie_table').dataTable( {
+    $('#movie-table').dataTable( {
     
     "bPaginate": false,
 
