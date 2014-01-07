@@ -3,6 +3,14 @@ body {
     font-size: 16px;
 }
 
+.container {
+    padding: 20px;
+}
+
 .cover {
     max-width: 100px;
+}
+
+.footer {
+    margin-top: 40px;
 }

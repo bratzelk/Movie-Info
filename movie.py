@@ -22,7 +22,7 @@ timeout = 5
 
 #a list of filetypes to match (it will also match directory names)
 #these are case insensitive
-allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv"]
+allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv","mp4","divx"]
 
 #The regex pattern used to match movie names
 movieMatchRegex = "^[^.].+$"
@@ -36,9 +36,18 @@ class Normaliser:
     def __init__(self):
         pass
 
-    #If the last four chars of a string are a number, remove them
+    #NOTE: This whole method needs rethinking... will probably remove it completely and ignore strings in the pattern match...
+    #If the last four to six chars of a string are a number (with or without braces), remove them
     #This might cause a problem with some movies...
     def removeTrailingNumber(self, string):
+        braces = ["{","}","(",")","[","]"]
+
+        #first check if there are braces and a number at the end of the string
+        #if so remove them
+        if string[-1] in braces and string[-6] in braces and string[-5:-1].isdigit():
+            return string[:-6]
+
+        #now check if there is just a number at the end...
         last4chars = string[-4:]
         if last4chars.isdigit():
             #remove the string

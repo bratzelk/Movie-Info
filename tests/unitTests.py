@@ -7,7 +7,7 @@ from movie import *
 
 class TestSequenceFunctions(unittest.TestCase):
 
-    allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv"]
+    allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv","mp4","divx"]
     matchRegex = "^[^.].+$"
 
     def setUp(self):

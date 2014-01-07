@@ -55,6 +55,26 @@
 
         </table>
 
+
+
+        <div id="failed">
+            <h1>Failed Lookups</h1>
+            {% for item in failedLookups %}
+                {{ item }}<br />
+            {% endfor %}
+        </div>
+
+
+
+        <div id="unmatched">
+            <h1>Un-Matched Movies</h1>
+            {% for item in unMatched %}
+                {{ item }}<br />
+            {% endfor %}
+        </div>
+
+
+
         <div class="footer">
             &copy; Kim Bratzel 2014
         </div>
