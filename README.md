@@ -14,7 +14,7 @@ This is still very much a work in progress.
 #####################################################
 #Dependencies
 #####################################################
-#python
+#python 2.7+
 #jinja2 - http://jinja.pocoo.org/ - sudo pip install jinja2
 
 #####################################################
@@ -24,14 +24,14 @@ This is still very much a work in progress.
 #####################################################
 #Usage Examples
 #####################################################
-#python movie.py -d ./tests/test01              -html -limit 500  > example-output.html
-#python movie.py -d ./tests                           -l 900      > example-output.txt
+#python main.py -d ./tests/test01              -html -limit 500  > example-output.html
+#python main.py -d ./tests                           -l 900      > example-output.txt
 
-#python movie.py -dir /Volumes/My_Book/Movies   -html             > example-output.html
-#python movie.py -dir /Volumes/KIM/TV Shows     -html -limit 500  > example-output.html
+#python main.py -dir /Volumes/My_Book/Movies   -html             > example-output.html
+#python main.py -dir /Volumes/KIM/TV Shows     -html -limit 500  > example-output.html
 
-#python movie.py -h (help)
-#python movie.py -v (version)
+#python main.py -h (help)
+#python main.py -v (version)
 
 #The most important part is the directory where your movies are stored
 #They can be files or folders within that directory
@@ -50,7 +50,8 @@ This is still very much a work in progress.
 #ToDo
 #####################################################
 #Make HTML Pretty (Bootstrap etc)
-#Add a list of movies which weren't found to the HTML output
+#Add some proper tests
+#Use an alternative API for failed lookups
 #Much more...
 #####################################################
 

@@ -3,7 +3,7 @@ import sys
 
 #import the program
 sys.path.append(".")
-from movie import *
+from main import *
 
 class TestSequenceFunctions(unittest.TestCase):
 
@@ -12,6 +12,10 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def setUp(self):
         self.matcher = Matcher(self.matchRegex, self.allowedFiletypes)
+        self.movieLookUp = MovieLookUp()
+        self.normaliser = Normaliser()
+
+
 
     #####################################################
     #Test the Matcher Class
@@ -31,8 +35,22 @@ class TestSequenceFunctions(unittest.TestCase):
         numberOfMatches = len(movieMatches)
         numberOfNonMatches = len(unMatched)
 
-        self.assertEquals(numberOfMatches, 8)
+        self.assertEquals(numberOfMatches, 10)
         self.assertEquals(numberOfNonMatches, 1)
+
+    #####################################################
+
+
+
+
+    #####################################################
+    #Test the MovieLookUp Class
+    #####################################################
+
+    def testEmptyByDefault(self):
+        foundMovies = self.movieLookUp.getFoundMovieData()
+        numberOfItems = len(foundMovies)
+        self.assertEquals(numberOfItems, 0)
 
     #####################################################
 
