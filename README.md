@@ -16,8 +16,8 @@ This is still very much a work in progress.
 Dependencies
 --------------
 
-python 2.7+
-jinja2 - http://jinja.pocoo.org/ - sudo pip install jinja2
+ - python 2.7+
+ - jinja2 - http://jinja.pocoo.org/ - sudo pip install jinja2
 
 
 Usage Examples
@@ -43,7 +43,7 @@ Tests
 To run the tests (these aren't completed yet...)
 
     ./run_tests.sh
-    
+
 
 
 ToDo
