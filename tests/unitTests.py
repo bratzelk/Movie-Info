@@ -1,9 +1,15 @@
 import unittest
-import sys
 
-#import the program
-sys.path.append(".")
+import sys
+import os
+import inspect
+
+#import the program from the src directory
+pathname = os.path.dirname(sys.argv[0])
+
+sys.path.append(os.path.join(os.path.abspath(pathname), '..', 'src'))
 from main import *
+
 
 class TestSequenceFunctions(unittest.TestCase):
 

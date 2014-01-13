@@ -1,19 +1,28 @@
 ---------------------------------------
 Movie Info By Kim Bratzel (Simple Output)
 ---------------------------------------
-5 items matched in directory!
-5 movies which we found!
-0 movies which we couldn't find!
+10 item(s) matched in directory!
+9 movie(s) which we found!
+1 movie(s) which we couldn't find!
+1 file(s) which we totally ignored!
 ---------------------------------------
 Movies which we found data for:
 
---                     Breaking Bad 		 9.5 
+--                     Breaking Bad 		 9.6 
 --                  Game of Thrones 		 9.4 
 --                 Django Unchained 		 8.5 
+--                    Jurassic Park 		 8.0 
 --               The Social Network 		 7.8 
 --                        True Grit 		 7.7 
+--                       Home Alone 		 7.3 
+--                    Wayne's World 		 7.0 
+--           A Good Day to Die Hard 		 5.3 
 ---------------------------------------
 Items which we found NO data for:
 
+--                 nonexistent film 
 ---------------------------------------
-Done.
+Items which we ignored:
+
+--              wrong filetype.film 
+---------------------------------------

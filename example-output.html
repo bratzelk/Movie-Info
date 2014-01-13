@@ -1,33 +1,157 @@
-<html>
-<head>
-<title>Movie Info Output</title>
+    <html>
 
-<script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script type="text/javascript" charset="utf-8" src="_html_files/scripts/jquery.dataTables.js"></script>
-<script type="text/javascript" charset="utf-8" src="_html_files/scripts/scripts.js"></script>
+    <head>
+    <title>Movie Info Output</title>
 
-<style type="text/css" title="currentStyle">@import "_html_files/css/style.css";</style>
-<style type="text/css" title="currentStyle">@import "_html_files/css/table.css";</style>
-</head>
-<body>
-<h1>Movie Info - Output</h1>
-<div>
-5 items matched in directory!<br />
-5 movies which we found!<br />
-0 movies which we couldn't find!<br />
-<br />
-</div>
-<table border="1" id="movie_table" class="display">
-<thead>
-	<tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Rated</th> <th>Link</th> </tr>
-</thead>
-<tbody>
-	<tr>  <td><img src="http://ia.media-imdb.com/images/M/MV5BMTU2MTgzMzQxNV5BMl5BanBnXkFtZTcwODg4NTQ3OQ@@._V1_SX300.jpg" class="cover" /></td>  <td>Breaking Bad</td>  <td>9.5</td>  <td>2008</td>  <td>TV-14</td>  <td><a href="http://imdb.com/title/tt0903747">Click Here</a></td> </tr>
-	<tr>  <td><img src="http://ia.media-imdb.com/images/M/MV5BNTY2MzAxNzM0Ml5BMl5BanBnXkFtZTcwNDA0MDkxOQ@@._V1_SX300.jpg" class="cover" /></td>  <td>Game of Thrones</td>  <td>9.4</td>  <td>2011</td>  <td>TV-MA</td>  <td><a href="http://imdb.com/title/tt0944947">Click Here</a></td> </tr>
-	<tr>  <td><img src="http://ia.media-imdb.com/images/M/MV5BMjIyNTQ5NjQ1OV5BMl5BanBnXkFtZTcwODg1MDU4OA@@._V1_SX300.jpg" class="cover" /></td>  <td>Django Unchained</td>  <td>8.5</td>  <td>2012</td>  <td>R</td>  <td><a href="http://imdb.com/title/tt1853728">Click Here</a></td> </tr>
-	<tr>  <td><img src="http://ia.media-imdb.com/images/M/MV5BMTM2ODk0NDAwMF5BMl5BanBnXkFtZTcwNTM1MDc2Mw@@._V1_SX300.jpg" class="cover" /></td>  <td>The Social Network</td>  <td>7.8</td>  <td>2010</td>  <td>PG-13</td>  <td><a href="http://imdb.com/title/tt1285016">Click Here</a></td> </tr>
-	<tr>  <td><img src="http://ia.media-imdb.com/images/M/MV5BMjIxNjAzODQ0N15BMl5BanBnXkFtZTcwODY2MjMyNA@@._V1_SX300.jpg" class="cover" /></td>  <td>True Grit</td>  <td>7.7</td>  <td>2010</td>  <td>PG-13</td>  <td><a href="http://imdb.com/title/tt1403865">Click Here</a></td> </tr>
-</tbody>
-</table>
-</body>
-</html>
+    <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="_html_files/scripts/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" src="_html_files/scripts/scripts.js"></script>
+
+    <style type="text/css" >@import "_html_files/css/style.css";</style>
+    <style type="text/css">@import "_html_files/css/table.css";</style>
+
+    </head>
+
+    <body>
+
+    <div class="container">
+
+        <h1>Movie Info - Output</h1>
+
+        <div id="info-box">
+            Generated On: Mon Jan 13 19:51:57 2014<br />
+            10 items matched in directory!<br />
+            9 movies which we found!<br />
+            1 movies which we couldn't find!<br />
+            1 file(s) which we totally ignored!<br />
+        </div>
+
+        <table id="movie-table" class="display">
+
+            <thead>
+                <tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Rated</th> <th>Link</th> </tr>
+            </thead>
+
+            
+            <tbody>
+
+                
+                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTU2MTgzMzQxNV5BMl5BanBnXkFtZTcwODg4NTQ3OQ@@._V1_SX300.jpg" class="cover" /></td>
+                    <td>Breaking Bad</td>  
+                    <td>9.6</td>
+                    <td>2008</td>
+                    <td>TV-14</td>
+                    <td><a href="http://imdb.com/title/tt0903747">Click Here</a></td>
+                    </tr>
+
+                
+                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BNTA5NzY4MTM0N15BMl5BanBnXkFtZTcwMTA0MDkxOQ@@._V1_SY264_CR0,0,178,264_.jpg" class="cover" /></td>
+                    <td>Game of Thrones</td>  
+                    <td>9.4</td>
+                    <td>2011</td>
+                    <td>TV-MA</td>
+                    <td><a href="http://imdb.com/title/tt0944947">Click Here</a></td>
+                    </tr>
+
+                
+                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMjIyNTQ5NjQ1OV5BMl5BanBnXkFtZTcwODg1MDU4OA@@._V1_SX300.jpg" class="cover" /></td>
+                    <td>Django Unchained</td>  
+                    <td>8.5</td>
+                    <td>2012</td>
+                    <td>R</td>
+                    <td><a href="http://imdb.com/title/tt1853728">Click Here</a></td>
+                    </tr>
+
+                
+                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMjQzODQyMzk2Nl5BMl5BanBnXkFtZTcwNTg4MjQ3OA@@._V1_SX178_.jpg" class="cover" /></td>
+                    <td>Jurassic Park</td>  
+                    <td>8.0</td>
+                    <td>1993</td>
+                    <td>PG-13</td>
+                    <td><a href="http://imdb.com/title/tt0107290">Click Here</a></td>
+                    </tr>
+
+                
+                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTM2ODk0NDAwMF5BMl5BanBnXkFtZTcwNTM1MDc2Mw@@._V1_SX300.jpg" class="cover" /></td>
+                    <td>The Social Network</td>  
+                    <td>7.8</td>
+                    <td>2010</td>
+                    <td>PG-13</td>
+                    <td><a href="http://imdb.com/title/tt1285016">Click Here</a></td>
+                    </tr>
+
+                
+                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMjIxNjAzODQ0N15BMl5BanBnXkFtZTcwODY2MjMyNA@@._V1_SX300.jpg" class="cover" /></td>
+                    <td>True Grit</td>  
+                    <td>7.7</td>
+                    <td>2010</td>
+                    <td>PG-13</td>
+                    <td><a href="http://imdb.com/title/tt1403865">Click Here</a></td>
+                    </tr>
+
+                
+                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTUzMzg4MTg2M15BMl5BanBnXkFtZTYwNDM4OTk4._V1_SX300.jpg" class="cover" /></td>
+                    <td>Home Alone</td>  
+                    <td>7.3</td>
+                    <td>1990</td>
+                    <td>PG</td>
+                    <td><a href="http://imdb.com/title/tt0099785">Click Here</a></td>
+                    </tr>
+
+                
+                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTcxOTgzNDU2MV5BMl5BanBnXkFtZTYwOTU2NTQ5._V1_SX300.jpg" class="cover" /></td>
+                    <td>Wayne's World</td>  
+                    <td>7.0</td>
+                    <td>1992</td>
+                    <td>PG-13</td>
+                    <td><a href="http://imdb.com/title/tt0105793">Click Here</a></td>
+                    </tr>
+
+                
+                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTcwNzgyNzUzOV5BMl5BanBnXkFtZTcwMzAwOTA5OA@@._V1_SY264_CR0,0,178,264_.jpg" class="cover" /></td>
+                    <td>A Good Day to Die Hard</td>  
+                    <td>5.3</td>
+                    <td>2013</td>
+                    <td>R</td>
+                    <td><a href="http://imdb.com/title/tt1606378">Click Here</a></td>
+                    </tr>
+
+                
+            </tbody>
+
+            
+        </table>
+
+
+
+        <div id="failed">
+            <h1>Failed Lookups</h1>
+                            nonexistent film<br />
+                    </div>
+
+
+
+        <div id="unmatched">
+            <h1>Un-Matched Movies</h1>
+                            wrong filetype.film<br />
+                    </div>
+
+
+
+        <div class="footer">
+            &copy; Kim Bratzel 2014
+        </div>
+
+    </div>
+
+    </body>
+    </html>

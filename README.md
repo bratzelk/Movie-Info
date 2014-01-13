@@ -24,14 +24,14 @@ This is still very much a work in progress.
 #####################################################
 #Usage Examples
 #####################################################
-#python main.py -d ./tests/test01              -html -limit 500  > example-output.html
-#python main.py -d ./tests                           -l 900      > example-output.txt
+#python ./src/main.py -d ./tests/testMovieDirectory     -html -limit 500    > example-output.html
+#python ./src/main.py -d ./tests/testMovieDirectory     -l 900              > example-output.txt
 
-#python main.py -dir /Volumes/My_Book/Movies   -html             > example-output.html
-#python main.py -dir /Volumes/KIM/TV Shows     -html -limit 500  > example-output.html
+#python ./src/main.py -dir /Volumes/My_Book/Movies      -html               > example-output.html
+#python ./src/main.py -dir /Volumes/KIM/TV Shows        -html -limit 500    > example-output.html
 
-#python main.py -h (help)
-#python main.py -v (version)
+#python ./src/main.py -h (help)
+#python ./src/main.py -v (version)
 
 #The most important part is the directory where your movies are stored
 #They can be files or folders within that directory

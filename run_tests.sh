@@ -15,6 +15,6 @@ else
 fi
 
 printf "\nChecking for movies...\n"
-python main.py -d ./tests/testMovieDirectory -limit 500
+python ./src/main.py -d ./tests/testMovieDirectory -limit 500
 
 printf "\nDone!\n"
