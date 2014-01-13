@@ -41,17 +41,18 @@ Tests
 --------------
 
 To run the tests (these aren't completed yet...)
-    ./run_tests.sh
 
+    ./run_tests.sh
+    
 
 
 ToDo
 --------------
 
--Make HTML Pretty (Bootstrap etc)
--Add some proper tests
--Use an alternative API for failed lookups
--Much more...
+ - Make HTML Pretty (Bootstrap etc)
+ - Add some proper tests
+ - Use an alternative API for failed lookups
+ - Much more...
 
 
 Contact
