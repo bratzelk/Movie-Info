@@ -37,20 +37,26 @@ They can be files or folders within that directory.
 
 
 
+Example Output
+--------------
+
+You can generate some example HTML output by running the following script:
+
+    ./generate_example_html.sh
+
 Tests
 --------------
 
-To run the tests (these aren't completed yet...)
+To run the tests (these aren't finished yet...) run this script:
 
     ./run_tests.sh
-
 
 
 ToDo
 --------------
 
- - Make HTML Pretty (Bootstrap etc)
- - Add some proper tests
+ - Make HTML Pretty
+ - Finish writing the unit tests
  - Use an alternative API for failed lookups
  - Much more...
 
