@@ -1,16 +1,47 @@
-body {
-    font-family: Arial;
-    font-size: 16px;
+body
+{
+    color: #4d4f53;
 }
 
-.container {
-    padding: 20px;
+a, a:visited
+{
+    color: #0079bd;
+}
+a:hover
+{
+    opacity: 0.8;
 }
 
-.cover {
+.container
+{
+
+}
+
+.cover
+{
     max-width: 100px;
 }
 
-.footer {
-    margin-top: 40px;
+#movie-table
+{
+
+}
+
+.meta-list
+{
+    list-style: none;
+}
+
+#failed, #unmatched
+{
+    margin: 40px 0px 0px 0px;
+}
+
+#footer
+{
+    padding: 20px 0px 20px 0px;
+    margin: 40px 0px 20px 0px;
+    text-align: center;
+    font-size: 1.1em;
+    color: #706f5c
 }

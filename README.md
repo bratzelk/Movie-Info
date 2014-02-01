@@ -32,8 +32,8 @@ Usage Examples
     python ./src/main.py -h (help)
     python ./src/main.py -v (version)
 
-The most important part is the directory where your movies are stored
-They can be files or folders within that directory
+The most important part is the directory where your movies are stored.
+They can be files or folders within that directory.
 
 
 

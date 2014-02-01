@@ -1,85 +1,93 @@
-    <html>
+<!DOCTYPE html>
+<html>
 
-    <head>
-    <title>Movie Info Output</title>
+<head>
+    <title>Movie Info Output - {{ dateTime }}</title>
 
-    <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script type="text/javascript" charset="utf-8" src="_html_files/scripts/jquery.dataTables.js"></script>
-    <script type="text/javascript" charset="utf-8" src="_html_files/scripts/scripts.js"></script>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <style type="text/css" >@import "_html_files/css/style.css";</style>
-    <style type="text/css">@import "_html_files/css/table.css";</style>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="_html_files/css/bootstrap.min.css" />
+     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="_html_files/css/style.css" />
+    <link rel="stylesheet" href="_html_files/css/table.css" />
 
-    </head>
+</head>
 
-    <body>
+<body>
 
     <div class="container">
 
         <h1>Movie Info - Output</h1>
 
-        <div id="info-box">
-            Generated On: {{ dateTime }}<br />
-            {{ (movieLookupData|length) + (failedLookups|length) }} items matched in directory!<br />
-            {{ (movieLookupData|length) }} movies which we found!<br />
-            {{ (failedLookups|length) }} movies which we couldn't find!<br />
-            {{ (unMatched|length) }} file(s) which we totally ignored!<br />
+        <div id="info-box" class="well">
+            <span class="lead">Generated On: {{ dateTime }}</span>
+            <ul class="meta-list">
+                <li>{{ (movieLookupData|length) + (failedLookups|length) }} items matched in directory</li>
+                <li>{{ (movieLookupData|length) }} movies which we found</li>
+                <li>{{ (failedLookups|length) }} movies which we couldn't find</li>
+                <li>{{ (unMatched|length) }} file(s) which we totally ignored</li>
+            </ul>
         </div>
 
         <table id="movie-table" class="display">
-
             <thead>
                 <tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Rated</th> <th>Link</th> </tr>
             </thead>
-
             {% block content %}
-
             <tbody>
-
                 {% for (current_movie,data) in movieLookupData %}
-
                     <tr>
-                    <td><img src="{{ data['Poster'] }}" class="cover" /></td>
+                    <td><img src="{{ data['Poster'] }}" class="cover" alt="{{ data['Title'] }}" /></td>
                     <td>{{ data['Title'] }}</td>  
                     <td>{{ data['imdbRating'] }}</td>
                     <td>{{ data['Released'][-4:] }}</td>
                     <td>{{ data['Rated'] }}</td>
                     <td><a href="http://imdb.com/title/{{ data['imdbID'] }}">Click Here</a></td>
                     </tr>
-
                 {% endfor %}
-
             </tbody>
-
             {% endblock %}
-
         </table>
 
 
-
-        <div id="failed">
-            <h1>Failed Lookups</h1>
+        <div id="failed" class="well">
+            <span class="lead">Failed Lookups</span>
+            <ul class="meta-list">
             {% for item in failedLookups %}
-                {{ item }}<br />
+                <li>{{ item }}</li>
             {% endfor %}
+            </ul>
         </div>
 
-
-
-        <div id="unmatched">
-            <h1>Un-Matched Movies</h1>
+        <div id="unmatched" class="well">
+            <span class="lead">Un-Matched Movies</span>
+            <ul class="meta-list">
             {% for item in unMatched %}
-                {{ item }}<br />
+                <li>{{ item }}</li>
             {% endfor %}
+            </ul>
         </div>
 
 
-
-        <div class="footer">
-            &copy; Kim Bratzel 2014
+        <div id="footer">
+            <a href="https://bitbucket.org/kimbratzel/movie-info" target="_blank">Movie Info 0.5</a> - <a href="http://kimbratzel.com" target="_blank">&copy; Kim Bratzel</a> 2014
         </div>
 
     </div>
 
-    </body>
-    </html>
+    <!-- JavaScript -->
+    <script type="text/javascript" charset="utf-8" src="_html_files/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="_html_files/js/bootstrap.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="_html_files/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" src="_html_files/js/scripts.js"></script>
+
+</body>
+</html>

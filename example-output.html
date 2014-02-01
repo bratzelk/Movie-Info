@@ -1,157 +1,149 @@
-    <html>
+<!DOCTYPE html>
+<html>
 
-    <head>
-    <title>Movie Info Output</title>
+<head>
+    <title>Movie Info Output - Sat Feb  1 17:59:54 2014</title>
 
-    <script type="text/javascript" charset="utf-8" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script type="text/javascript" charset="utf-8" src="_html_files/scripts/jquery.dataTables.js"></script>
-    <script type="text/javascript" charset="utf-8" src="_html_files/scripts/scripts.js"></script>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <style type="text/css" >@import "_html_files/css/style.css";</style>
-    <style type="text/css">@import "_html_files/css/table.css";</style>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="_html_files/css/bootstrap.min.css" />
+     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="_html_files/css/style.css" />
+    <link rel="stylesheet" href="_html_files/css/table.css" />
 
-    </head>
+</head>
 
-    <body>
+<body>
 
     <div class="container">
 
         <h1>Movie Info - Output</h1>
 
-        <div id="info-box">
-            Generated On: Mon Jan 13 19:51:57 2014<br />
-            10 items matched in directory!<br />
-            9 movies which we found!<br />
-            1 movies which we couldn't find!<br />
-            1 file(s) which we totally ignored!<br />
+        <div id="info-box" class="well">
+            <span class="lead">Generated On: Sat Feb  1 17:59:54 2014</span>
+            <ul class="meta-list">
+                <li>10 items matched in directory</li>
+                <li>9 movies which we found</li>
+                <li>1 movies which we couldn't find</li>
+                <li>1 file(s) which we totally ignored</li>
+            </ul>
         </div>
 
         <table id="movie-table" class="display">
-
             <thead>
                 <tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Rated</th> <th>Link</th> </tr>
             </thead>
-
-            
-            <tbody>
-
-                
-                    <tr>
-                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTU2MTgzMzQxNV5BMl5BanBnXkFtZTcwODg4NTQ3OQ@@._V1_SX300.jpg" class="cover" /></td>
+                        <tbody>
+                                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTU2MTgzMzQxNV5BMl5BanBnXkFtZTcwODg4NTQ3OQ@@._V1_SX300.jpg" class="cover" alt="Breaking Bad" /></td>
                     <td>Breaking Bad</td>  
                     <td>9.6</td>
                     <td>2008</td>
                     <td>TV-14</td>
                     <td><a href="http://imdb.com/title/tt0903747">Click Here</a></td>
                     </tr>
-
-                
-                    <tr>
-                    <td><img src="http://ia.media-imdb.com/images/M/MV5BNTA5NzY4MTM0N15BMl5BanBnXkFtZTcwMTA0MDkxOQ@@._V1_SY264_CR0,0,178,264_.jpg" class="cover" /></td>
+                                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BNTA5NzY4MTM0N15BMl5BanBnXkFtZTcwMTA0MDkxOQ@@._V1_SX300.jpg" class="cover" alt="Game of Thrones" /></td>
                     <td>Game of Thrones</td>  
-                    <td>9.4</td>
+                    <td>9.5</td>
                     <td>2011</td>
                     <td>TV-MA</td>
                     <td><a href="http://imdb.com/title/tt0944947">Click Here</a></td>
                     </tr>
-
-                
-                    <tr>
-                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMjIyNTQ5NjQ1OV5BMl5BanBnXkFtZTcwODg1MDU4OA@@._V1_SX300.jpg" class="cover" /></td>
+                                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMjIyNTQ5NjQ1OV5BMl5BanBnXkFtZTcwODg1MDU4OA@@._V1_SX300.jpg" class="cover" alt="Django Unchained" /></td>
                     <td>Django Unchained</td>  
                     <td>8.5</td>
                     <td>2012</td>
                     <td>R</td>
                     <td><a href="http://imdb.com/title/tt1853728">Click Here</a></td>
                     </tr>
-
-                
-                    <tr>
-                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMjQzODQyMzk2Nl5BMl5BanBnXkFtZTcwNTg4MjQ3OA@@._V1_SX178_.jpg" class="cover" /></td>
+                                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMjQzODQyMzk2Nl5BMl5BanBnXkFtZTcwNTg4MjQ3OA@@._V1_SX300.jpg" class="cover" alt="Jurassic Park" /></td>
                     <td>Jurassic Park</td>  
                     <td>8.0</td>
                     <td>1993</td>
                     <td>PG-13</td>
                     <td><a href="http://imdb.com/title/tt0107290">Click Here</a></td>
                     </tr>
-
-                
-                    <tr>
-                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTM2ODk0NDAwMF5BMl5BanBnXkFtZTcwNTM1MDc2Mw@@._V1_SX300.jpg" class="cover" /></td>
+                                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTM2ODk0NDAwMF5BMl5BanBnXkFtZTcwNTM1MDc2Mw@@._V1_SX300.jpg" class="cover" alt="The Social Network" /></td>
                     <td>The Social Network</td>  
                     <td>7.8</td>
                     <td>2010</td>
                     <td>PG-13</td>
                     <td><a href="http://imdb.com/title/tt1285016">Click Here</a></td>
                     </tr>
-
-                
-                    <tr>
-                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMjIxNjAzODQ0N15BMl5BanBnXkFtZTcwODY2MjMyNA@@._V1_SX300.jpg" class="cover" /></td>
+                                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMjIxNjAzODQ0N15BMl5BanBnXkFtZTcwODY2MjMyNA@@._V1_SX300.jpg" class="cover" alt="True Grit" /></td>
                     <td>True Grit</td>  
                     <td>7.7</td>
                     <td>2010</td>
                     <td>PG-13</td>
                     <td><a href="http://imdb.com/title/tt1403865">Click Here</a></td>
                     </tr>
-
-                
-                    <tr>
-                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTUzMzg4MTg2M15BMl5BanBnXkFtZTYwNDM4OTk4._V1_SX300.jpg" class="cover" /></td>
+                                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTUzMzg4MTg2M15BMl5BanBnXkFtZTYwNDM4OTk4._V1_SX300.jpg" class="cover" alt="Home Alone" /></td>
                     <td>Home Alone</td>  
-                    <td>7.3</td>
+                    <td>7.4</td>
                     <td>1990</td>
                     <td>PG</td>
                     <td><a href="http://imdb.com/title/tt0099785">Click Here</a></td>
                     </tr>
-
-                
-                    <tr>
-                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTcxOTgzNDU2MV5BMl5BanBnXkFtZTYwOTU2NTQ5._V1_SX300.jpg" class="cover" /></td>
+                                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTcxOTgzNDU2MV5BMl5BanBnXkFtZTYwOTU2NTQ5._V1_SX300.jpg" class="cover" alt="Wayne's World" /></td>
                     <td>Wayne's World</td>  
                     <td>7.0</td>
                     <td>1992</td>
                     <td>PG-13</td>
                     <td><a href="http://imdb.com/title/tt0105793">Click Here</a></td>
                     </tr>
-
-                
-                    <tr>
-                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTcwNzgyNzUzOV5BMl5BanBnXkFtZTcwMzAwOTA5OA@@._V1_SY264_CR0,0,178,264_.jpg" class="cover" /></td>
+                                    <tr>
+                    <td><img src="http://ia.media-imdb.com/images/M/MV5BMTcwNzgyNzUzOV5BMl5BanBnXkFtZTcwMzAwOTA5OA@@._V1_SX300.jpg" class="cover" alt="A Good Day to Die Hard" /></td>
                     <td>A Good Day to Die Hard</td>  
-                    <td>5.3</td>
+                    <td>5.4</td>
                     <td>2013</td>
                     <td>R</td>
                     <td><a href="http://imdb.com/title/tt1606378">Click Here</a></td>
                     </tr>
-
-                
-            </tbody>
-
-            
-        </table>
+                            </tbody>
+                    </table>
 
 
+        <div id="failed" class="well">
+            <span class="lead">Failed Lookups</span>
+            <ul class="meta-list">
+                            <li>nonexistent film</li>
+                        </ul>
+        </div>
 
-        <div id="failed">
-            <h1>Failed Lookups</h1>
-                            nonexistent film<br />
-                    </div>
+        <div id="unmatched" class="well">
+            <span class="lead">Un-Matched Movies</span>
+            <ul class="meta-list">
+                            <li>wrong filetype.film</li>
+                        </ul>
+        </div>
 
 
-
-        <div id="unmatched">
-            <h1>Un-Matched Movies</h1>
-                            wrong filetype.film<br />
-                    </div>
-
-
-
-        <div class="footer">
-            &copy; Kim Bratzel 2014
+        <div id="footer">
+            <a href="https://bitbucket.org/kimbratzel/movie-info" target="_blank">Movie Info 0.5</a> - <a href="http://kimbratzel.com" target="_blank">&copy; Kim Bratzel</a> 2014
         </div>
 
     </div>
 
-    </body>
-    </html>
+    <!-- JavaScript -->
+    <script type="text/javascript" charset="utf-8" src="_html_files/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="_html_files/js/bootstrap.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="_html_files/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" src="_html_files/js/scripts.js"></script>
+
+</body>
+</html>
