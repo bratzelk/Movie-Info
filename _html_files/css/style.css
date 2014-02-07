@@ -17,6 +17,54 @@ a:hover
 
 }
 
+#coverflow
+{
+    width: 100%;
+    clear: both;
+    overflow: auto;
+    min-height: 300px;
+    height: 100%;
+}
+#coverflow img
+{
+    border: 1px solid black;
+    height: auto !important;
+    max-width: 150px !important;
+    max-height: 223px !important;
+
+    opacity: 0.9;
+}
+
+#coverflow img:hover
+{
+    cursor: pointer;
+    opacity: 1.0;
+    border: 1px solid #D3D6FF;
+}
+
+.coverflow-selected
+{
+    opacity: 1.0 !important;
+    border: 1px solid #D3D6FF !important;
+}
+
+.coverflow-meta
+{
+    position: relative !important;
+    width: 100%  !important;
+    clear: both;
+    overflow: hidden;
+    top: auto !important;
+    left: auto !important;
+    margin: 350px 0px 20px 0px;
+    font-size: 1.8em;
+    background: #D3D6FF;
+}
+
+
+
+
+
 .cover
 {
     max-width: 100px;

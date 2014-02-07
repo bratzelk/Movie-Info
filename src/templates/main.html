@@ -37,6 +37,16 @@
             </ul>
         </div>
 
+
+        <div id="coverflow">
+                {% for (current_movie,data) in movieLookupData %}
+                        <img src="{{ data['Poster'] }}" title="{{ data['Title'] }}" alt="{{ data['Title'] }}" />
+                {% endfor %}
+
+                <div class="clearfix"></div>
+        </div>
+
+
         <table id="movie-table" class="display">
             <thead>
                 <tr> <th>Image</th> <th>Title</th> <th>IMDB Rating</th> <th>Year</th> <th>Rated</th> <th>Link</th> </tr>
@@ -87,6 +97,8 @@
     <script type="text/javascript" charset="utf-8" src="_html_files/js/jquery-1.11.0.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="_html_files/js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf-8" src="_html_files/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf-8" src="_html_files/js/jquery.coverscroll.js"></script>
+
     <script type="text/javascript" charset="utf-8" src="_html_files/js/scripts.js"></script>
 
 </body>

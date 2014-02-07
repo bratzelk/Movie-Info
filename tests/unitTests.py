@@ -11,7 +11,7 @@ sys.path.append(os.path.join(os.path.abspath(pathname), '..', 'src'))
 from main import *
 
 
-class TestSequenceFunctions(unittest.TestCase):
+class UnitTests(unittest.TestCase):
 
     allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv","mp4","divx"]
     matchRegex = "^[^.].+$"
