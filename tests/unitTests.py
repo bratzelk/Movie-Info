@@ -41,7 +41,7 @@ class UnitTests(unittest.TestCase):
         numberOfMatches = len(movieMatches)
         numberOfNonMatches = len(unMatched)
 
-        self.assertEquals(numberOfMatches, 10)
+        self.assertEquals(numberOfMatches, 11)
         self.assertEquals(numberOfNonMatches, 1)
 
     #####################################################

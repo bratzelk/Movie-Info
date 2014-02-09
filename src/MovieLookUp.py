@@ -35,10 +35,37 @@ class MovieLookUp:
 
     #I'm using this api for now, but you could change this potentially...
     def _getApiUrl(self, title, year=""):
-        return "http://www.imdbapi.com/?t=%s&y=%s" % (title, year)
+        return "http://www.omdbapi.com/?t=%s&y=%s" % (title, year)
+
+    def _getApiIdUrl(self, imdbId):
+        return "http://www.omdbapi.com/?i=%s" % (imdbId)
 
     def _makeUrlFriendlyTitle(self, title):
         return title.replace(' ','+')
+
+
+
+    #returns {success=bool, data=dict} where bool is True if the lookup was successful and dict contains the data for the lookup
+    def _doLookup(self, url):
+        try:
+            lookupData = urllib2.urlopen(url).read()
+        except urllib2.HTTPError, e:
+            print "HTTP error: %d" % e.code
+            exit()
+        except urllib2.URLError, e:
+            print "Network error: %s" % e.reason
+            exit()
+
+        #It looks like the lookup returned something...
+        jsonLookupData = json.loads(lookupData, encoding="utf-8")
+
+        #Check if it found anything useful
+        if jsonLookupData['Response']  == "True": #probably not the best way to check this...
+            return {"success":True, "data":jsonLookupData}
+        else:
+            return {"success":False, "data":None}
+
+
 
     def lookupTitles(self, movieTitles):
 
@@ -53,26 +80,17 @@ class MovieLookUp:
             #you could optionally add the year as a second parameter to get better results...
             url = self._getApiUrl(title)
 
-            #Try and get a json response from the URL...
-            try:
-                lookupData = urllib2.urlopen(url).read()
-            except urllib2.HTTPError, e:
-                print "HTTP error: %d" % e.code
-                exit()
-            except urllib2.URLError, e:
-                print "Network error: %s" % e.reason
-                exit()
-
-            #It looks like the lookup returned something...
-            jsonLookupData = json.loads(lookupData, encoding="utf-8")
-
-            #Check if it found anything useful
-            if jsonLookupData['Response']  == "True": #probably not the best way to check this...
-                #print "Found Movie: %s" % json_movie_data['Title']
+            doLookup = self._doLookup(url)
+            if doLookup["success"]:
+                jsonLookupData = doLookup["data"]
                 self._addMovie(jsonLookupData['Title'], jsonLookupData)
                 #jsonLookupData keys include: imdbRating, title, year, rated, released, director...
             else:
-                #print "Couldn't Find: %s" % title
                 self.addNotFoundMovie(movieTitles[count], jsonLookupData)
 
             count += 1
+
+        def lookupById(self, imdbId):
+            url = self._getApiIdUrl(imdbId)
+            doLookup = self._doLookup(url)
+            

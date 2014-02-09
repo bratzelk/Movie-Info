@@ -12,6 +12,15 @@ This is still very much a work in progress.
 
 
 
+Change Log
+--------------
+ - 0.6 (Coming Soon)
+    - Erroneous Title Correction
+    - CoverFlow View
+    - Unit Tests
+ - 0.5 Stable Release
+ - 0.5 Beta
+
 
 Dependencies
 --------------
@@ -54,6 +63,8 @@ To run the tests (these aren't finished yet...) run this script:
 
 ToDo
 --------------
+
+ - Finish erroneous title correction
 
  - Make HTML Pretty
  - Finish writing the unit tests

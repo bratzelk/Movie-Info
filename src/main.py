@@ -13,6 +13,7 @@ from jinja2 import Environment, FileSystemLoader
 from Matcher import Matcher
 from MovieLookUp import MovieLookUp
 from Normaliser import Normaliser
+from IMDBIdFinder import IMDBIdFinder
 
 #####################################################
 #Some Settings
@@ -125,6 +126,12 @@ if __name__ == '__main__':
 
     movieLookupData = movielookup.getFoundMovieData()
     failedLookups = movielookup.getNotFoundMovieData()
+
+
+    #TODO
+    idFinder = IMDBIdFinder()
+
+
 
     #Output the data
     if HTML_OUTPUT:
