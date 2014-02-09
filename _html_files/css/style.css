@@ -17,13 +17,29 @@ a:hover
 
 }
 
+#coverflow-container
+{
+    text-align: center;
+}
+#coverflow-container h2
+{
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: #E2E4FF;
+}
+
 #coverflow
 {
     width: 100%;
     clear: both;
-    overflow: auto;
-    min-height: 300px;
-    height: 100%;
+    overflow: hidden;
+
+    background: #D3D6FF;
+
+    margin: 5px 0px 5px 0px;
+
+    min-height: 261px !important;
 }
 #coverflow img
 {
@@ -32,47 +48,33 @@ a:hover
     max-width: 150px !important;
     max-height: 223px !important;
 
-    opacity: 0.9;
+    cursor:     pointer;
+    box-shadow: 0 0 4em 1em white;
 }
-
 #coverflow img:hover
 {
     cursor: pointer;
     opacity: 1.0;
-    border: 1px solid #D3D6FF;
+    border: 1px dashed #D3D6FF;
 }
 
-.coverflow-selected
+#coverflow-meta
 {
-    opacity: 1.0 !important;
-    border: 1px solid #D3D6FF !important;
-}
-
-.coverflow-meta
-{
-    position: relative !important;
-    width: 100%  !important;
+    width: 100%;
     clear: both;
-    overflow: hidden;
-    top: auto !important;
-    left: auto !important;
-    margin: 350px 0px 20px 0px;
-    font-size: 1.8em;
+    font-size: 1.2em;
     background: #D3D6FF;
+    text-align: center;
+    margin: 10px 0px 10px 0px;
+    font-weight: bold;
+    padding: 20px;
 }
-
-
 
 
 
 .cover
 {
     max-width: 100px;
-}
-
-#movie-table
-{
-
 }
 
 .meta-list
