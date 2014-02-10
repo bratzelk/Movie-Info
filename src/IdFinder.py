@@ -7,7 +7,7 @@ import urllib2
 
 #This class will find an IMDB Movie id given a movie title
 #It can be used to help correct erroneous movie titles
-class IMDBIdFinder:
+class IdFinder:
 
     def __init__(self):
         pass
@@ -24,26 +24,23 @@ class IMDBIdFinder:
                     "searchURL": searchURL,
                 }
 
-
-    def lookupSingleName(self, name):
-
-        lookupSite = self._lookupSite(name)
-
+    def findIdByTitle(self, title):
+        """ """
+        lookupSite = self._lookupSite(title)
         searchURL = lookupSite["searchURL"]
-
         results = json.load(urllib.urlopen(searchURL))
         try:
             url = results['responseData']['results'][0]['url']
             IMDBId = re.search(lookupSite["urlparser"], url).group(1)
         except:
-            IMDBId = "none"
+            IMDBId = None
 
         return IMDBId
 
-    def lookupManyNames(self, namesList):
-        idList = []
-        for name in namesList:
-            idList.append(self.lookupSingleName(name))
-        return idList
+    def findIdByTitleList(self, titleList):
+        idDict = {}
+        for title in titleList:
+            idDict[title] = self.findIdByTitle(title)
+        return idDict
 
 

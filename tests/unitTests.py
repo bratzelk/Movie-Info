@@ -18,8 +18,10 @@ class UnitTests(unittest.TestCase):
 
     def setUp(self):
         self.matcher = Matcher(self.matchRegex, self.allowedFiletypes)
-        self.movieLookUp = MovieLookUp()
+        self.movieLookup = MovieLookup()
+        self.movieDataUtil = MovieDataUtil()
         self.normaliser = Normaliser()
+        self.idFinder = IdFinder()
 
 
 
@@ -48,17 +50,64 @@ class UnitTests(unittest.TestCase):
 
 
 
+    #####################################################
+    #Test the MovieLookup Class
+    #####################################################
+    def testBadMovieLookup(self):
+        title = "Film Does Not Exist"
+        lookupResult = self.movieLookup.lookupByTitle(title)
+        isValidLookup = self.movieDataUtil.isValidLookupResult(lookupResult)
+        self.assertFalse(isValidLookup)
+
+    def testGoodMovieLookup(self):
+        title = "true grit"
+        lookupResult = self.movieLookup.lookupByTitle(title)
+        isValidLookup = self.movieDataUtil.isValidLookupResult(lookupResult)
+        self.assertTrue(isValidLookup)
+    #####################################################
+
 
     #####################################################
-    #Test the MovieLookUp Class
+    #Test the IdFinder Class
+    #####################################################
+    def testFindKnownMovie(self):
+        knownId = "tt0105793"
+        lookupId = self.idFinder.findIdByTitle("Waynes World 1992")
+        self.assertEquals(lookupId, knownId)
+
+    def testFindNonExistantMovie(self):
+        lookupId = self.idFinder.findIdByTitle(" !!^&*#@ Some fake film title...")
+        self.assertIsNone(lookupId)
+
+
+    #####################################################
+    #Integration Tests
     #####################################################
 
-    def testEmptyByDefault(self):
-        foundMovies = self.movieLookUp.getFoundMovieData()
-        numberOfItems = len(foundMovies)
-        self.assertEquals(numberOfItems, 0)
+    def testIdFindAndMovieLookup(self):
+        """
+        Lookup a movie with an incorrect title,
+        Find the IMDB id for this movie,
+        Find the correct title
+        """
+        title = "Waynes world 2"
+        actualTitle = "Wayne's World 2"
 
-    #####################################################
+        lookupResult = self.movieLookup.lookupByTitle(title)
+        isValidLookup = self.movieDataUtil.isValidLookupResult(lookupResult)
+        #Check that this isn't a correct title (it is missing an apostrophe)
+        self.assertFalse(isValidLookup)
+
+        foundId = self.idFinder.findIdByTitle(title)
+        #check that we found an id for this movie
+        self.assertIsNotNone(foundId)
+
+        lookupResult = self.movieLookup.lookupById(foundId)
+        isValidLookup = self.movieDataUtil.isValidLookupResult(lookupResult)
+        self.assertTrue(isValidLookup)
+
+        #now check the new title compares to the actual title
+        self.assertEquals(lookupResult['Title'], actualTitle)
 
 
 if __name__ == '__main__':

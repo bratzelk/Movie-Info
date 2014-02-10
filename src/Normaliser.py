@@ -23,9 +23,10 @@ class Normaliser:
             return string
 
     def normalise(self, string):
-        return string.lower()
+        return string.lower().strip()
 
     def normaliseList(self, list):
         newList = []
         for item in list:
             newList.append(self.normalise(item))
+        return newList

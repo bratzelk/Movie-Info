@@ -1,8 +1,9 @@
 #####################################################
-#Movie Info 0.5
+#Movie Info
 #By Kim Bratzel 2014
 #####################################################
 
+import sys
 import os
 import socket
 import argparse
@@ -11,19 +12,23 @@ import time
 from jinja2 import Environment, FileSystemLoader
 
 from Matcher import Matcher
-from MovieLookUp import MovieLookUp
+from MovieLookup import MovieLookup
+from MovieDataUtil import MovieDataUtil
 from Normaliser import Normaliser
-from IMDBIdFinder import IMDBIdFinder
+from IdFinder import IdFinder
+
+
+__version__ = "0.6"
+
 
 #####################################################
 #Some Settings
 #####################################################
 
 #the amount of time to wait before timing out during each lookup
-timeout = 5
+timeout = 20
 
 #a list of filetypes to match (it will also match directory names)
-#these are case insensitive
 allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv","mp4","divx"]
 
 #The regex pattern used to match movie names
@@ -33,8 +38,6 @@ movieMatchRegex = "^[^.].+$"
 templateDirectory = os.path.dirname(os.path.abspath(__file__)) + "/templates"
 
 #####################################################
-
-
 
 #####################################################
 #Function to produce some simple output
@@ -53,29 +56,108 @@ def simpleOutput(movieLookupData, failedLookups, unMatched):
     print "Movies which we found data for:\n"
     #The second part of this sorts in order of highest IMDB rating
     for (current_movie,data) in movieLookupData:
-            print "-- %32s \t\t %s " % (current_movie, data['imdbRating'])
+            print "-- %32s \t\t %s " % (data['Title'], data['imdbRating'])
 
     print "---------------------------------------"
     print "Items which we found NO data for:\n"
     #Print movies which couldn't be found
-    for (current_movie,data) in failedLookups.iteritems():
-            print "-- %32s " % current_movie
+    for title in failedLookups:
+            print "-- %32s " % title
     print "---------------------------------------"
 
     print "Items which we ignored:\n"
     #Print movies which couldn't be found
-    for (ignored) in unMatched:
+    for ignored in unMatched:
             print "-- %32s " % ignored
     print "---------------------------------------"
 
 
+#####################################################
+#The most important bits
+#####################################################
+def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
 
+    movielookup = MovieLookup()                         #A class to help lookup movie titles
+    movieDataUtil = MovieDataUtil()                     #A helper class for movie json data
+    matcher = Matcher(movieMatchRegex, allowedFiletypes)#Match files in a given directory
+    normaliser = Normaliser()                           #
+    idFinder = IdFinder()                               #Used to find an imdb id from movie filename
 
+    #First, let's match files which match the regex and have the required file extensions in the given directory
+    matcher.findInDirectory(MOVIE_DIR)
+    movieMatches = matcher.getMatches()
+    unMatched = matcher.getIgnored()
+
+    #normalise the matches (the filenames will be used as movie titles)
+    normalisedMovieMatches = []
+    for item in movieMatches:
+        normalisedItem = item
+        normalisedItem = normaliser.removeTrailingNumber(normalisedItem)
+        normalisedItem = normaliser.normalise(normalisedItem)
+        normalisedMovieMatches.append(normalisedItem)
+
+    #Now we lookup successful matches
+    movieData = {}      #successful lookup data will go here
+    failedLookups = []  #we will do something with failed lookups later...
+
+    count = 0   #used to limit the number of lookups we will do
+    for title in normalisedMovieMatches:
+        count += 1
+        if count >= LIMIT:#check that we don't go over the arbitrary limit
+            break
+
+        #look up each movie in the list
+        lookupData = movielookup.lookupByTitle(title)
+
+        #check if we found a movie
+        if movieDataUtil.isValidLookupResult(lookupData):
+            movieData[title] = lookupData
+        else:
+            failedLookups.append(title)
+
+    #now we will try to correct the failed lookups by using google to find each imdb id
+    idLookupDict = idFinder.findIdByTitleList(failedLookups)
+
+    #reset the failed lookups
+    failedLookups = []      #there should be a lot less now...
+    titleCorrections = 0    #count how many corrections we actually found
+
+    #Now lookup using the new ids which we found
+    for title, foundId in idLookupDict.items():
+        if foundId != None:
+            #we found an id, now let's look the movie up by its id
+            lookupData = movielookup.lookupById(foundId)
+
+            #theoretically this should always be true unless we got an invalid id somehow...
+            if movieDataUtil.isValidLookupResult(lookupData):
+                movieData[title] = lookupData
+                titleCorrections += 1
+            else:
+                failedLookups.append(title)
+        else:
+            failedLookups.append(title)
+
+    #sort the data by imdb id
+    movieData = movieDataUtil.sortMovieData(movieData)
+
+    #Output the data
+    if HTML_OUTPUT_FLAG:
+        templateEnvironment = Environment(loader=FileSystemLoader(templateDirectory),trim_blocks=True)
+        print templateEnvironment.get_template('main.html').render(
+            movieLookupData=movieData,
+            failedLookups=failedLookups,
+            unMatched=unMatched,
+            titleCorrections=titleCorrections,
+            dateTime = time.strftime("%c"),
+            version = __version__,
+        )
+    else:
+        simpleOutput(movieData, failedLookups, unMatched)
 
 #####################################################
-#Run the program
+#Main Function
 #####################################################
-if __name__ == '__main__':
+def main():
 
     #####################################################
     #Set up the command line arguments
@@ -87,63 +169,21 @@ if __name__ == '__main__':
                        help='The maximum number of movies to search through')
     parser.add_argument('-html','-o', default=False, required=False, action='store_true', 
                        help='Output in HTML')
-    parser.add_argument('-v', action='version', version='%(prog)s 0.5')
+    parser.add_argument('-v','-version', action='version', version='%s'%(__version__))
     args = vars(parser.parse_args())
     #####################################################
-
-    #get our command line arguments as variables
-    MOVIE_DIR = args['dir']
-    HTML_OUTPUT = args['html']
-    LIMIT = args['limit']
 
     #set the timeout
     socket.setdefaulttimeout(timeout)
 
-    #####################################################
+    #Run the program using the line arguments
+    run(args['dir'], args['html'], args['limit'])
 
-    #Match files in the given directory
-    matcher = Matcher(movieMatchRegex, allowedFiletypes)
-    matcher.findInDirectory(MOVIE_DIR)
+    return 0 #success
 
-    movieMatches = matcher.getMatches()
-    unMatched = matcher.getIgnored()
-
-    #normalise the matches
-    normalisedMovieMatches = []
-    normaliser = Normaliser()
-    for item in movieMatches:
-        normalisedItem = item
-        normalisedItem = normaliser.removeTrailingNumber(normalisedItem)
-        normalisedItem = normaliser.normalise(normalisedItem)
-        normalisedMovieMatches.append(normalisedItem)
-
-
-    #Lookup successful matches
-    movielookup = MovieLookUp()
-    movielookup.lookupTitles(normalisedMovieMatches)
-
-    movielookup.sortMovieData()
-
-    movieLookupData = movielookup.getFoundMovieData()
-    failedLookups = movielookup.getNotFoundMovieData()
-
-
-    #TODO
-    idFinder = IMDBIdFinder()
-
-
-
-    #Output the data
-    if HTML_OUTPUT:
-
-        template_env = Environment(loader=FileSystemLoader(templateDirectory),trim_blocks=True)
-        
-        print template_env.get_template('main.html').render(
-            movieLookupData=movieLookupData,
-            failedLookups=failedLookups,
-            unMatched=unMatched,
-            dateTime = time.strftime("%c"),
-        )
-    else:
-        simpleOutput(movieLookupData, failedLookups, unMatched)
-
+#####################################################
+#Run the program
+#####################################################
+if __name__ == '__main__':
+    status = main()
+    sys.exit(status)
