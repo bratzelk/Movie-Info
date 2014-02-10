@@ -1,4 +1,4 @@
-Movie Info 0.5
+Movie Info 0.6
 ==============
 By Kim Bratzel 2014
 --------------
@@ -12,12 +12,12 @@ It generates a nice looking webpage which includes a sortable table containing e
 
 Change Log
 --------------
- - 0.6 (Coming Soon)
+ - 0.6
     - Erroneous Title Correction
     - CoverFlow View
-    - Unit Tests
+    - Added Some Unit Tests
  - 0.5 Stable Release
- - 0.5 Beta
+ - 0.4 Beta
 
 
 Dependencies
@@ -25,6 +25,22 @@ Dependencies
 
  - python 2.7+
  - jinja2 - http://jinja.pocoo.org/ - sudo pip install jinja2
+
+
+Example Output
+--------------
+
+You can generate some example HTML output by running the following script:
+
+    ./generate_example_html.sh
+
+
+Installation
+--------------
+
+You can install the package by running this command (I haven't actually tested this yet...):
+
+    sudo python setup.py install
 
 
 Usage Examples
@@ -43,18 +59,10 @@ The most important part is the directory where your movies are stored.
 They can be files or folders within that directory.
 
 
-
-Example Output
---------------
-
-You can generate some example HTML output by running the following script:
-
-    ./generate_example_html.sh
-
 Tests
 --------------
 
-To run the tests (these aren't finished yet...) run this script:
+To run the tests (these aren't finished) run this script:
 
     ./run_tests.sh
 
@@ -62,12 +70,9 @@ To run the tests (these aren't finished yet...) run this script:
 ToDo
 --------------
 
- - Finish erroneous title correction
-
  - Make HTML Pretty
  - Finish writing the unit tests
- - Use an alternative API for failed lookups
- - Much more...
+ - And more...
 
 
 Contact
