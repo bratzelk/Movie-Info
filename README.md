@@ -72,6 +72,8 @@ ToDo
 
  - Make HTML Pretty
  - Finish writing the unit tests
+ - Cache Lookups
+ - Recommend Movies
  - And more...
 
 
