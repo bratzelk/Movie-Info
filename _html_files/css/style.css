@@ -1,97 +1,67 @@
-body
-{
-    color: #4d4f53;
+body {
+  color: #4d4f53;
 }
-
-a, a:visited
-{
-    color: #0079bd;
+a,
+a:visited {
+  color: #0079bd;
 }
-a:hover
-{
-    opacity: 0.8;
+a:hover {
+  opacity: 0.8;
 }
-
-.container
-{
-
+#coverflow-container {
+  text-align: center;
 }
-
-#coverflow-container
-{
-    text-align: center;
+#coverflow-container h2 {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: #E2E4FF;
 }
-#coverflow-container h2
-{
-    display: block;
-    width: 100%;
-    padding: 10px;
-    background: #E2E4FF;
+#coverflow {
+  width: 100%;
+  clear: both;
+  overflow: hidden;
+  background: #D3D6FF;
+  margin: 5px 0px 5px 0px;
+  min-height: 261px !important;
 }
-
-#coverflow
-{
-    width: 100%;
-    clear: both;
-    overflow: hidden;
-
-    background: #D3D6FF;
-
-    margin: 5px 0px 5px 0px;
-
-    min-height: 261px !important;
+#coverflow img {
+  border: 1px solid black;
+  height: auto !important;
+  max-width: 150px !important;
+  max-height: 223px !important;
+  cursor: pointer;
+  box-shadow: 0 0 4em 1em white;
 }
-#coverflow img
-{
-    border: 1px solid black;
-    height: auto !important;
-    max-width: 150px !important;
-    max-height: 223px !important;
-
-    cursor:     pointer;
-    box-shadow: 0 0 4em 1em white;
+#coverflow img:hover {
+  cursor: pointer;
+  opacity: 1.0;
+  border: 1px dashed #D3D6FF;
 }
-#coverflow img:hover
-{
-    cursor: pointer;
-    opacity: 1.0;
-    border: 1px dashed #D3D6FF;
+#coverflow-meta {
+  width: 100%;
+  clear: both;
+  font-size: 1.2em;
+  background: #D3D6FF;
+  text-align: center;
+  margin: 10px 0px 10px 0px;
+  font-weight: bold;
+  padding: 20px;
 }
-
-#coverflow-meta
-{
-    width: 100%;
-    clear: both;
-    font-size: 1.2em;
-    background: #D3D6FF;
-    text-align: center;
-    margin: 10px 0px 10px 0px;
-    font-weight: bold;
-    padding: 20px;
+.cover {
+  max-width: 100px;
 }
-
-
-
-.cover
-{
-    max-width: 100px;
+.meta-list {
+  list-style: none;
 }
-
-.meta-list
-{
-    list-style: none;
+#failed,
+#unmatched {
+  margin: 40px 0px 0px 0px;
 }
-
-#failed, #unmatched
-{
-    margin: 40px 0px 0px 0px;
-}
-
-#footer
-{
-    padding: 20px 0px 20px 0px;
-    margin: 40px 0px 20px 0px;
-    text-align: center;
-    font-size: 1.1em;
-    color: #706f5c
+#footer {
+  padding: 20px 0px 20px 0px;
+  margin: 40px 0px 20px 0px;
+  text-align: center;
+  font-size: 1.1em;
+  color: #706f5c;
 }
