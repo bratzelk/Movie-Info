@@ -1,3 +1,5 @@
+#!/bin/sh
+
 printf "Movie Info Test Suite \n\n"
 
 #Many of the test cases require an Internet connection to work

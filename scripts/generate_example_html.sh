@@ -1,3 +1,5 @@
+#!/bin/sh
+
 printf "Generating Example HTML Output... \n\n"
 
 python ./src/main.py -d ./tests/testMovieDirectory     -html -limit 500    > example-output.html
