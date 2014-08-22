@@ -1,4 +1,10 @@
+
+
 .DS_Store
+
+#ignore pickle files
+*.p
+
 *.pyc
 dist/*
 build/*
