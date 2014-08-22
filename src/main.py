@@ -16,6 +16,7 @@ from MovieLookup import MovieLookup
 from MovieDataUtil import MovieDataUtil
 from Normaliser import Normaliser
 from IdFinder import IdFinder
+from Cache import Cache
 
 
 __version__ = "0.6"
@@ -82,6 +83,7 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
     matcher = Matcher(movieMatchRegex, allowedFiletypes)#Match files in a given directory
     normaliser = Normaliser()                           #
     idFinder = IdFinder()                               #Used to find an imdb id from movie filename
+    cache = Cache()                                     #Used for caching data
 
     #First, let's match files which match the regex and have the required file extensions in the given directory
     matcher.findInDirectory(MOVIE_DIR)
