@@ -98,9 +98,10 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
         normalisedItem = normaliser.normalise(normalisedItem)
         normalisedMovieMatches.append(normalisedItem)
 
-    #Now we lookup successful matches
+    #Now we lookup successful matches, first in the cache, then online
     movieData = {}      #successful lookup data will go here
     failedLookups = []  #we will do something with failed lookups later...
+    cachedMovies = cache.getMovieData() #the previously found movies
 
     count = 0   #used to limit the number of lookups we will do
     for title in normalisedMovieMatches:
@@ -108,14 +109,21 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
         if count >= LIMIT:#check that we don't go over the arbitrary limit
             break
 
-        #look up each movie in the list
-        lookupData = movielookup.lookupByTitle(title)
-
-        #check if we found a movie
-        if movieDataUtil.isValidLookupResult(lookupData):
-            movieData[title] = lookupData
+        #Check if the movie is in our cache
+        if(cachedMovies.get(title)):
+            movieData[title] = cachedMovies.get(title)
+        #Otherwise, lookup using API
         else:
-            failedLookups.append(title)
+            #look up each movie in the list
+            lookupData = movielookup.lookupByTitle(title)
+
+            #check if we found a movie
+            if movieDataUtil.isValidLookupResult(lookupData):
+                movieData[title] = lookupData
+                #great, let's also add it to the cache
+                cachedMovies[title] = lookupData
+            else:
+                failedLookups.append(title)
 
     #now we will try to correct the failed lookups by using google to find each imdb id
     idLookupDict = idFinder.findIdByTitleList(failedLookups)
@@ -134,10 +142,15 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
             if movieDataUtil.isValidLookupResult(lookupData):
                 movieData[title] = lookupData
                 titleCorrections += 1
+                #great, let's also add it to the cache
+                cachedMovies[title] = lookupData
             else:
                 failedLookups.append(title)
         else:
             failedLookups.append(title)
+
+    #Save the updated cache
+    cache.saveMovieData(cachedMovies)
 
     #sort the data by imdb id
     movieData = movieDataUtil.sortMovieData(movieData)
