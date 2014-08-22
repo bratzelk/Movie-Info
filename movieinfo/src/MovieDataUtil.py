@@ -1,3 +1,4 @@
+import logging
 
 class MovieDataUtil:
 

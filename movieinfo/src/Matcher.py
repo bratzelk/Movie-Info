@@ -1,6 +1,6 @@
 import os 
 import re
-
+import logging
 
 #This creates a list of directories and filenames which match a regex within a single directory
 #it creates a list of matched filenames/directories and list of ignored, or unmatched filenames/directories
