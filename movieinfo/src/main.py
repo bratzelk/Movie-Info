@@ -73,8 +73,6 @@ def run(movie_dir, html_output_flag, limit):
     #Match files in a given directory
     matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)
 
-    normaliser = Normaliser()
-
     #Used to find an imdb id from movie filename
     id_finder = IdFinder()
 
@@ -91,8 +89,8 @@ def run(movie_dir, html_output_flag, limit):
     normalised_movie_matches = []
     for item in movie_matches:
         normalised_item = item
-        normalised_item = normaliser.removeTrailingNumber(normalised_item)
-        normalised_item = normaliser.normalise(normalised_item)
+        normalised_item = Normaliser.remove_trailing_number(normalised_item)
+        normalised_item = Normaliser.normalise(normalised_item)
         normalised_movie_matches.append(normalised_item)
 
     #Now we lookup successful matches, first in the cache, then online
