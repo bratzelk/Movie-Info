@@ -16,6 +16,11 @@ a:hover
     opacity: 0.8;
 }
 
+.well
+{
+    background: @well-background;
+}
+
 .container
 {
 
@@ -29,7 +34,7 @@ a:hover
         display: block;
         width: 100%;
         padding: 10px;
-        background: #E2E4FF;
+        background: @coverflow-background;
     }
 }
 
@@ -40,7 +45,7 @@ a:hover
     clear: both;
     overflow: hidden;
 
-    background: #D3D6FF;
+    background: @coverflow-background;
 
     margin: 5px 0px 5px 0px;
 
@@ -71,7 +76,7 @@ a:hover
     width: 100%;
     clear: both;
     font-size: 1.2em;
-    background: #D3D6FF;
+    background: @coverflow-background;
     text-align: center;
     margin: 10px 0px 10px 0px;
     font-weight: bold;
@@ -84,6 +89,14 @@ a:hover
 {
     max-width: 100px;
 }
+
+
+.tooltip
+{
+    background-color: transparent !important;
+    border: 0px !important;
+}
+
 
 .meta-list
 {
