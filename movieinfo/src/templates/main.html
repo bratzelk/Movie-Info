@@ -47,6 +47,12 @@
                 <li>{{ (failed_lookups|length) }} movies which we couldn't find</li>
                 <li>{{ (unmatched|length) }} file(s) which we totally ignored</li>
             </ul>
+            <ul class="meta-list">
+                <li>Cache file: {{ (cache_stats['file']) }}</li>
+                <li>Cache hits: {{ (cache_stats['hits']) }}</li>
+                <li>Cache misses: {{ (cache_stats['misses']) }}</li>
+                <li>Cache size: {{ (cache_stats['size']) }}</li>
+            </ul>
         </div>
 
 
