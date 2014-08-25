@@ -104,8 +104,9 @@ def run(movie_dir, html_output_flag, limit):
             break
 
         #Check if the movie is in our cache
-        if movie_cache.get(title):
-            movie_data[title] = movie_cache.get(title)
+        cached_movie = movie_cache.get(title)
+        if cached_movie:
+            movie_data[title] = cached_movie
         #Otherwise, lookup using API
         else:
             #look up each movie in the list
