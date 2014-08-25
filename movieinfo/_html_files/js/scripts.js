@@ -14,11 +14,12 @@ $(document).ready(function()
     $("#coverflow-meta").hide();
 
     //show hide the coverflow when they click the link
-    $("#coverflow-toggle").click(function () {
+    $("#coverflow-toggle").click(function (e) {
         $("#coverflow").toggle();
         $("#coverflow-meta").toggle();
         //trigger the resize event so it redraws the coverflow
         $(window).trigger('resize');
+        e.preventDefault();
     });
 
     //Do the actual coverflow
@@ -37,6 +38,8 @@ $(document).ready(function()
                         }
     
     });
+
+    $("[data-toggle='tooltip']").tooltip(); 
 
 });
 

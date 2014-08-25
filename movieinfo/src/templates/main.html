@@ -85,7 +85,7 @@
                     <td>{{ data['imdbRating'] }}</td>
                     <td>{{ data['Released'][-4:] }}</td>
                     <td>{{ data['Rated'] }}</td>
-                    <td><a href="http://imdb.com/title/{{ data['imdbID'] }}" target="_blank"><i class="fa fa-film"></i></a></td>
+                    <td><a href="http://imdb.com/title/{{ data['imdbID'] }}" target="_blank" data-toggle="tooltip" title="" data-original-title="IMDB" ><i class="fa fa-film"></i></a></td>
                     </tr>
                 {% endfor %}
             </tbody>
