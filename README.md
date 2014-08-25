@@ -1,4 +1,4 @@
-Movie Info 0.6
+Movie Info 0.7
 ==============
 By Kim Bratzel 2014
 --------------
@@ -20,6 +20,9 @@ Initially I wrote the whole script in a few hours in one relatively simple and y
 
 Change Log
 --------------
+ - 0.7
+    - Local Caching
+    - Various Improvements
  - 0.6
     - Erroneous Title Correction
     - CoverFlow View
