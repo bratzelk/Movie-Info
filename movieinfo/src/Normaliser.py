@@ -36,10 +36,13 @@ class Normaliser(object):
         return string.lower().strip()
 
     @staticmethod
-    def normalise_list(list_of_strings):
-        """Normalise a list of strings"""
-        new_list = []
-        for item in list_of_strings:
-            new_list.append(Normaliser.normalise(item))
-        return new_list
+    def normalise_list_and_remove_trailing_number(list_of_strings):
+        """Normalise a list of strings and remove any trailing number."""
 
+        normalised_strings = []
+        for item in list_of_strings:
+            normalised_item = item
+            normalised_item = Normaliser.remove_trailing_number(normalised_item)
+            normalised_item = Normaliser.normalise(normalised_item)
+            normalised_strings.append(normalised_item)
+        return normalised_strings

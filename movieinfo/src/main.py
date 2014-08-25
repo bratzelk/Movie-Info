@@ -83,12 +83,8 @@ def run(movie_dir, html_output_flag, limit):
     unmatched = matcher.get_ignored()
 
     #normalise the matches (the filenames will be used as movie titles)
-    normalised_movie_matches = []
-    for item in movie_matches:
-        normalised_item = item
-        normalised_item = Normaliser.remove_trailing_number(normalised_item)
-        normalised_item = Normaliser.normalise(normalised_item)
-        normalised_movie_matches.append(normalised_item)
+    normalised_movie_matches = Normaliser\
+        .normalise_list_and_remove_trailing_number(movie_matches)
 
     #Now we lookup successful matches, first in the cache, then online
     movie_data = {}      #successful lookup data will go here
