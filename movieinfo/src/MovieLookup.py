@@ -2,7 +2,7 @@ import json
 import urllib2
 import logging
 
-class MovieLookup:
+class MovieLookup(object):
 
     #I'm using this api for now, but you could change this potentially...
     def _getApiUrl(self, title, year=""):

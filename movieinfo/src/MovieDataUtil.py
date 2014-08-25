@@ -1,6 +1,7 @@
 import logging
 
-class MovieDataUtil:
+class MovieDataUtil(object):
+    """Some simple helper functions"""
 
     def sortMovieData(self, movieData):
         """sort our movie dictionary by their IMDB rating value."""

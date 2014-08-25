@@ -79,11 +79,11 @@ class UnitTests(unittest.TestCase):
     #####################################################
     def testFindKnownMovie(self):
         knownId = "tt0105793"
-        lookupId = self.idFinder.findIdByTitle("Waynes World 1992")
+        lookupId = self.idFinder.find_id_by_title("Waynes World 1992")
         self.assertEquals(lookupId, knownId)
 
     def testFindNonExistantMovie(self):
-        lookupId = self.idFinder.findIdByTitle(" !!^&*#@ Some fake film title...")
+        lookupId = self.idFinder.find_id_by_title(" !!^&*#@ Some fake film title...")
         self.assertIsNone(lookupId)
 
 
@@ -105,7 +105,7 @@ class UnitTests(unittest.TestCase):
         #Check that this isn't a correct title (it is missing an apostrophe)
         self.assertFalse(isValidLookup)
 
-        foundId = self.idFinder.findIdByTitle(title)
+        foundId = self.idFinder.find_id_by_title(title)
         #check that we found an id for this movie
         self.assertIsNotNone(foundId)
 

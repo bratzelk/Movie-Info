@@ -1,7 +1,10 @@
-#####################################################
-#Movie Info
-#By Kim Bratzel 2014
-#####################################################
+#!/usr/bin/env python
+"""
+---------------------------------------
+Movie Info
+By Kim Bratzel 2014
+---------------------------------------
+"""
 
 import sys
 import os
@@ -26,168 +29,176 @@ __version__ = "0.6"
 __author__ = "Kim Bratzel"
 
 
+def simple_output(movie_lookup_data, failed_lookups, unmatched):
+    """Produces some simple output"""
 
-#####################################################
-#Function to produce some simple output
-#####################################################
-def simpleOutput(movieLookupData, failedLookups, unMatched):
     print "---------------------------------------"
     print "Movie Info By Kim Bratzel (Simple Output)"
     print "---------------------------------------"
-    print "%d item(s) matched in directory!" % (len(movieLookupData) + len(failedLookups))
-    print "%d movie(s) which we found!" % len(movieLookupData)
-    print "%d movie(s) which we couldn't find!" % len(failedLookups)
-    print "%d file(s) which we totally ignored!" % len(unMatched)
+    print "%d item(s) matched in directory!" % (len(movie_lookup_data) +
+                                                len(failed_lookups))
+    print "%d movie(s) which we found!" % len(movie_lookup_data)
+    print "%d movie(s) which we couldn't find!" % len(failed_lookups)
+    print "%d file(s) which we totally ignored!" % len(unmatched)
 
     #Print movies which we found
     print "---------------------------------------"
     print "Movies which we found data for:\n"
     #The second part of this sorts in order of highest IMDB rating
-    for (current_movie,data) in movieLookupData:
-            print "-- %32s \t\t %s " % (data['Title'], data['imdbRating'])
+    for (current_movie, data) in movie_lookup_data:
+        print "-- %32s \t\t %s " % (data['Title'], data['imdbRating'])
 
     print "---------------------------------------"
     print "Items which we found NO data for:\n"
     #Print movies which couldn't be found
-    for title in failedLookups:
-            print "-- %32s " % title
+    for title in failed_lookups:
+        print "-- %32s " % title
     print "---------------------------------------"
 
     print "Items which we ignored:\n"
     #Print movies which couldn't be found
-    for ignored in unMatched:
-            print "-- %32s " % ignored
+    for ignored in unmatched:
+        print "-- %32s " % ignored
     print "---------------------------------------"
 
+def run(movie_dir, html_output_flag, limit):
+    """This is the real entry point for the program"""
 
-#####################################################
-#The most important bits
-#####################################################
-def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
+    #A class to help lookup movie titles
+    movielookup = MovieLookup()
 
-    movielookup = MovieLookup()                         #A class to help lookup movie titles
-    movieDataUtil = MovieDataUtil()                     #A helper class for movie json data
-    matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)#Match files in a given directory
-    normaliser = Normaliser()                           #
-    idFinder = IdFinder()                               #Used to find an imdb id from movie filename
-    movieCache = Cache(Config.movieCacheFile)           #Used for caching movie data
+    #A helper class for movie json data
+    movie_data_util = MovieDataUtil()
 
-    #First, let's match files which match the regex and have the required file extensions in the given directory
-    matcher.findInDirectory(MOVIE_DIR)
-    movieMatches = matcher.getMatches()
-    unMatched = matcher.getIgnored()
+    #Match files in a given directory
+    matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)
+
+    normaliser = Normaliser()
+
+    #Used to find an imdb id from movie filename
+    id_finder = IdFinder()
+
+    #Used for caching movie data
+    movie_cache = Cache(Config.movieCacheFile)
+
+    #First, let's match files which match the regex and have the
+    #required file extensions in the given directory
+    matcher.findInDirectory(movie_dir)
+    movie_matches = matcher.getMatches()
+    unmatched = matcher.getIgnored()
 
     #normalise the matches (the filenames will be used as movie titles)
-    normalisedMovieMatches = []
-    for item in movieMatches:
-        normalisedItem = item
-        normalisedItem = normaliser.removeTrailingNumber(normalisedItem)
-        normalisedItem = normaliser.normalise(normalisedItem)
-        normalisedMovieMatches.append(normalisedItem)
+    normalised_movie_matches = []
+    for item in movie_matches:
+        normalised_item = item
+        normalised_item = normaliser.removeTrailingNumber(normalised_item)
+        normalised_item = normaliser.normalise(normalised_item)
+        normalised_movie_matches.append(normalised_item)
 
     #Now we lookup successful matches, first in the cache, then online
-    movieData = {}      #successful lookup data will go here
-    failedLookups = []  #we will do something with failed lookups later...
+    movie_data = {}      #successful lookup data will go here
+    failed_lookups = []  #we will do something with failed lookups later...
 
     count = 0   #used to limit the number of lookups we will do
-    for title in normalisedMovieMatches:
+    for title in normalised_movie_matches:
         count += 1
-        if count >= LIMIT:#check that we don't go over the arbitrary limit
+        if count >= limit:#check that we don't go over the arbitrary limit
             break
 
         #Check if the movie is in our cache
-        if(movieCache.find(title)):
-            movieData[title] = movieCache.find(title)
+        if movie_cache.get(title):
+            movie_data[title] = movie_cache.get(title)
         #Otherwise, lookup using API
         else:
             #look up each movie in the list
-            lookupData = movielookup.lookupByTitle(title)
+            lookup_data = movielookup.lookupByTitle(title)
 
             #check if we found a movie
-            if movieDataUtil.isValidLookupResult(lookupData):
-                movieData[title] = lookupData
+            if movie_data_util.isValidLookupResult(lookup_data):
+                movie_data[title] = lookup_data
                 #great, let's also add it to the cache
-                movieCache.addToCache(title, lookupData)
+                movie_cache.add_to_cache(title, lookup_data)
             else:
-                failedLookups.append(title)
+                failed_lookups.append(title)
 
-    #now we will try to correct the failed lookups by using google to find each imdb id
-    idLookupDict = idFinder.findIdByTitleList(failedLookups)
+    #now we will try to correct the failed lookups
+    #by using google to find each imdb id
+    id_lookup_dict = id_finder.find_id_by_title_list(failed_lookups)
 
     #reset the failed lookups
-    failedLookups = []      #there should be a lot less now...
-    titleCorrections = 0    #count how many corrections we actually found
+    failed_lookups = []      #there should be a lot less now...
+    title_corrections = 0    #count how many corrections we actually found
 
     #Now lookup using the new ids which we found
-    for title, foundId in idLookupDict.items():
-        if foundId != None:
+    for title, found_id in id_lookup_dict.items():
+        if found_id != None:
             #we found an id, now let's look the movie up by its id
-            lookupData = movielookup.lookupById(foundId)
+            lookup_data = movielookup.lookupById(found_id)
 
-            #theoretically this should always be true unless we got an invalid id somehow...
-            if movieDataUtil.isValidLookupResult(lookupData):
-                movieData[title] = lookupData
-                titleCorrections += 1
+            #theoretically this should always be true
+            #unless we got an invalid id somehow...
+            if movie_data_util.isValidLookupResult(lookup_data):
+                movie_data[title] = lookup_data
+                title_corrections += 1
                 #great, let's also add it to the cache
-                movieCache.addToCache(title, lookupData)
+                movie_cache.add_to_cache(title, lookup_data)
             else:
-                failedLookups.append(title)
+                failed_lookups.append(title)
         else:
-            failedLookups.append(title)
+            failed_lookups.append(title)
 
     #Save the updated cache
-    movieCache.saveCacheToDisk()
+    movie_cache.save_cache_to_disk()
 
     #sort the data by imdb id
-    movieData = movieDataUtil.sortMovieData(movieData)
+    movie_data = movie_data_util.sortMovieData(movie_data)
 
     #Output the data
-    if HTML_OUTPUT_FLAG:
+    if html_output_flag:
         logging.debug('Loading template from: %s', Config.templateDirectory)
-        templateEnvironment = Environment(loader=FileSystemLoader(Config.templateDirectory),trim_blocks=True)
-        print templateEnvironment.get_template('main.html').render(
-            movieLookupData=movieData,
-            failedLookups=failedLookups,
-            unMatched=unMatched,
-            titleCorrections=titleCorrections,
-            dateTime = time.strftime("%c"),
-            version = __version__,
-            author = __author__,
-            cacheStats = movieCache.cacheStats(),
+        template_environment = Environment( \
+                        loader=FileSystemLoader( \
+                        Config.templateDirectory), trim_blocks=True)
+        print template_environment.get_template('main.html').render(
+            movie_lookup_data=movie_data,
+            failed_lookups=failed_lookups,
+            unmatched=unmatched,
+            title_corrections=title_corrections,
+            datetime=time.strftime("%c"),
+            version=__version__,
+            author=__author__,
+            cache_stats=movie_cache.cache_stats(),
         )
     else:
-        simpleOutput(movieData, failedLookups, unMatched)
+        simple_output(movie_data, failed_lookups, unmatched)
 
-#####################################################
-#Main Function
 #####################################################
 def start():
+    """Runner to set up cmd args and start the program"""
 
-    #####################################################
     #Set up the command line arguments
-    #####################################################
     parser = argparse.ArgumentParser(description='Movie Info')
-    parser.add_argument('-dir', '-d', required=True,
+    parser.add_argument('-dir', '-d', required=True, \
                        help='The directory where your movies are stored')
-    parser.add_argument('-limit', '-l', type=int, nargs='?', default=1000, required=False,
-                       help='The maximum number of movies to search through')
-    parser.add_argument('-html','-o', default=False, required=False, action='store_true', 
-                       help='Output in HTML')
-    parser.add_argument('-v','-version', action='version', version='%s'%(__version__))
+    parser.add_argument('-limit', '-l', type=int, nargs='?', \
+                        default=1000, required=False, \
+                        help='The maximum number of movies to search through')
+    parser.add_argument('-html', '-o', default=False, required=False, \
+                        action='store_true', help='Output in HTML')
+    parser.add_argument('-v', '-version', action='version', \
+                        version='%s'%(__version__))
     args = vars(parser.parse_args())
-    #####################################################
 
     #set the timeout
     socket.setdefaulttimeout(Config.timeout)
 
-    #Run the program using the line arguments
+    #Run the program using the cmd line arguments
     run(args['dir'], args['html'], args['limit'])
 
     return 0 #success
 
-#####################################################
-#Run the program
+
 #####################################################
 if __name__ == '__main__':
-    status = start()
-    sys.exit(status)
+    #Run the program
+    sys.exit(start())

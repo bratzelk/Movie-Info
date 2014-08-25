@@ -1,6 +1,6 @@
 import logging
 
-class Normaliser:
+class Normaliser(object):
     def __init__(self):
         pass
 

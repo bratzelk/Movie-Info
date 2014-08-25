@@ -1,17 +1,24 @@
+"""This creates a list of directories and filenames which match a regex
+within a single directory it creates a list of matched filenames/directories
+and list of ignored, or unmatched filenames/directories"""
+
 import os 
 import re
 import logging
 
-#This creates a list of directories and filenames which match a regex within a single directory
-#it creates a list of matched filenames/directories and list of ignored, or unmatched filenames/directories
-class Matcher:
 
-    #stores a list of titles from the local drive which were match in the given directory
+class Matcher(object):
+    """This creates a list of directories and filenames which match a regex
+    within a single directory it creates a list of matched filenames/directories
+    and list of ignored, or unmatched filenames/directories"""
+
+    #Stores a list of titles which were matched
     matchList = []
-    #A list of items which were ignored due to their file extension (not really used for anything)
+
+    #A list of items which were ignored due to their file extension
     ignoredList = []
 
-    def __init__(self, matchRegex,allowedFiletypes):
+    def __init__(self, matchRegex, allowedFiletypes):
         self.matchList = []
         self.ignoredList = []
 
