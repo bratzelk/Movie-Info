@@ -52,7 +52,15 @@ class Cache(object):
     def delete_cache(self):
         """Delete the Cache File"""
         logging.debug('Deleting entire cache file')
-        os.remove(self._get_cache_file())
+        try:
+            os.remove(self._get_cache_file())
+        except OSError:
+            pass
+
+        self._cache_data = {}
+        self._hits = 0
+        self._misses = 0
+        self._dirty = False
 
     def get(self, item):
         """Returns the item in the Cache or None if item is not found"""
@@ -93,11 +101,16 @@ class Cache(object):
         """Returns the number of cache misses"""
         return self._misses
 
+    def get_cache_size(self):
+        """Returns the number of entries in the cache"""
+        return len(self._cache_data)
+
     def cache_stats(self):
         """Returns some cache stats"""
         return  {\
             "hits": self.get_hits(), \
             "misses": self.get_misses(), \
-            "file": self._get_cache_file(),
+            "file": self._get_cache_file(), \
+            "size": self.get_cache_size(),
                 }
 

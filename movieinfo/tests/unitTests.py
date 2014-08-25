@@ -1,8 +1,10 @@
+"""This contains unit tests for the movieinfo package."""
+
+
 import unittest
 
 import sys
 import os
-import inspect
 
 #import the program from the src directory
 pathname = os.path.dirname(sys.argv[0])
@@ -13,13 +15,23 @@ from main import *
 
 class UnitTests(unittest.TestCase):
 
-    def setUp(self):
+    _test_cache_file = "test.p"
+
+    @classmethod
+    def setUpClass(self):
         self.matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)
         self.movieLookup = MovieLookup()
         self.movieDataUtil = MovieDataUtil()
         self.normaliser = Normaliser()
         self.idFinder = IdFinder()
+        self.cache = Cache(self._test_cache_file)
+        #Ensure the cache was deleted previously
+        self.cache.delete_cache()
 
+    @classmethod
+    def tearDownClass(self):
+        #Delete the cache now that we're done
+        self.cache.delete_cache()
 
     #####################################################
     #Test the Config Class
@@ -86,6 +98,43 @@ class UnitTests(unittest.TestCase):
         lookupId = self.idFinder.find_id_by_title(" !!^&*#@ Some fake film title...")
         self.assertIsNone(lookupId)
 
+
+    #####################################################
+    #Test the Cache Class
+    #####################################################
+    def testCacheEmpty(self):
+        self.cache = Cache(self._test_cache_file)
+
+        cache_size = self.cache.get_cache_size()
+        self.assertEquals(cache_size, 0)
+
+        self.cache.delete_cache()
+
+    def testCacheNotEmpty(self):
+        self.cache = Cache(self._test_cache_file)
+
+        self.cache.add_to_cache("key","value")
+        cache_size = self.cache.get_cache_size()
+        self.assertEquals(cache_size, 1)
+
+        self.cache.delete_cache()
+
+    def testCacheFind(self):
+        self.cache = Cache(self._test_cache_file)
+
+        self.cache.add_to_cache("key","value")
+        item = self.cache.get("key")
+        self.assertEquals(item, "value")
+
+        self.cache.delete_cache()
+
+    def testCacheCantFind(self):
+        self.cache = Cache(self._test_cache_file)
+
+        item = self.cache.get("invalid_key")
+        self.assertIsNone(item)
+
+        self.cache.delete_cache()
 
     #####################################################
     #Integration Tests
