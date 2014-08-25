@@ -68,13 +68,13 @@ def run(movie_dir, html_output_flag, limit):
     movielookup = MovieLookup()
 
     #Match files in a given directory
-    matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)
+    matcher = Matcher(Config.movie_match_regex, Config.allowed_file_types)
 
     #Used to find an imdb id from movie filename
     id_finder = IdFinder()
 
     #Used for caching movie data
-    movie_cache = Cache(Config.movieCacheFile)
+    movie_cache = Cache(Config.movie_cache_file)
 
     #First, let's match files which match the regex and have the
     #required file extensions in the given directory
@@ -151,10 +151,10 @@ def run(movie_dir, html_output_flag, limit):
 
     #Output the data
     if html_output_flag:
-        logging.debug('Loading template from: %s', Config.templateDirectory)
+        logging.debug('Loading template from: %s', Config.template_directory)
         template_environment = Environment( \
                         loader=FileSystemLoader( \
-                        Config.templateDirectory), trim_blocks=True)
+                        Config.template_directory), trim_blocks=True)
         print template_environment.get_template('main.html').render(
             movie_lookup_data=movie_data,
             failed_lookups=failed_lookups,

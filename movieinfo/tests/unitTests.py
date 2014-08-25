@@ -19,7 +19,7 @@ class UnitTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)
+        self.matcher = Matcher(Config.movie_match_regex, Config.allowed_file_types)
         self.movieLookup = MovieLookup()
         self.normaliser = Normaliser()
         self.idFinder = IdFinder()
@@ -37,7 +37,7 @@ class UnitTests(unittest.TestCase):
     #####################################################
     def testConfigVarsExist(self):
         self.assertGreater(Config.timeout, 0)
-        self.assertGreater(len(Config.allowedFiletypes), 0)
+        self.assertGreater(len(Config.allowed_file_types), 0)
 
     def testConfigVarsNotExist(self):
         with self.assertRaises(AttributeError):

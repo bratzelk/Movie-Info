@@ -14,18 +14,18 @@ class Config(object):
     timeout = 20
 
     #a list of filetypes to match (it will also match directory names)
-    allowedFiletypes = ["tmp", "avi", "mpg", "mpeg", "mkv", "mp4", "divx"]
+    allowed_file_types = ["tmp", "avi", "mpg", "mpeg", "mkv", "mp4", "divx"]
 
     #The regex pattern used to match movie names
-    movieMatchRegex = "^[^.].+$"
+    movie_match_regex = "^[^.].+$"
 
     #The directory where the html templates are stored
-    templateDirectory = os.path.dirname( \
+    template_directory = os.path.dirname( \
                             os.path.abspath(__file__)) + "/templates"
 
     #The cache file to use for movies
-    movieCacheFile = "movieCache.p"
+    movie_cache_file = "movieCache.p"
 
 
     def __init__(self):
-        pass
+        raise Exception("You shouldn't instantiate this class.")
