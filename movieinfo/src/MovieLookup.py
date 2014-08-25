@@ -1,6 +1,6 @@
 import json
 import urllib2
-
+import logging
 
 class MovieLookup:
 

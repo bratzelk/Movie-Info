@@ -8,6 +8,7 @@ import os
 import socket
 import argparse
 import time
+import logging
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -26,6 +27,9 @@ __version__ = "0.6"
 #Some Settings
 #####################################################
 
+#Logger Settings
+logging.basicConfig(filename='log.log', filemode='w', level=logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+
 #the amount of time to wait before timing out during each lookup
 timeout = 20
 
@@ -37,6 +41,7 @@ movieMatchRegex = "^[^.].+$"
 
 #The directory where the html templates are stored
 templateDirectory = os.path.dirname(os.path.abspath(__file__)) + "/templates"
+
 
 #####################################################
 
@@ -157,6 +162,7 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
 
     #Output the data
     if HTML_OUTPUT_FLAG:
+        logging.debug('Loading template from: %s', templateDirectory)
         templateEnvironment = Environment(loader=FileSystemLoader(templateDirectory),trim_blocks=True)
         print templateEnvironment.get_template('main.html').render(
             movieLookupData=movieData,
@@ -172,7 +178,7 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
 #####################################################
 #Main Function
 #####################################################
-def main():
+def start():
 
     #####################################################
     #Set up the command line arguments
@@ -200,5 +206,5 @@ def main():
 #Run the program
 #####################################################
 if __name__ == '__main__':
-    status = main()
+    status = start()
     sys.exit(status)

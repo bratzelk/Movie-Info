@@ -1,19 +1,22 @@
 import pickle
 import os
+import logging
 
 class Cache:
     """This class caches looked up movies in order to improve efficiency. """
 
     #The current working directory
-    __dir__ = os.path.dirname(os.path.abspath(__file__))
+    cacheDir = os.getcwd()
 
     #This is the name of the file where the movie cache is stored
-    cacheFile = os.path.join(__dir__, "movieCache.p")
+    cacheFile = os.path.join(cacheDir, "movieCache.p")
 
 
     def __init__(self):
         """If the cache file doesn't exist then create it"""
         if not os.path.exists(self.getMovieCacheFile()):
+            logging.debug('Pickle cache does not exist. Create a new one.')
+            logging.debug('Cache file will be saved in: %s', self.cacheDir)
             open(self.getMovieCacheFile(), 'w').close() 
 
     def _saveToCache(self, data, cacheFile):

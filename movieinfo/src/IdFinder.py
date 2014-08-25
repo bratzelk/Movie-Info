@@ -2,7 +2,7 @@ import json
 import re
 import urllib
 import urllib2
-
+import logging
 
 
 #This class will find an IMDB Movie id given a movie title

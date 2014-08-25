@@ -1,11 +1,14 @@
-
-
-.DS_Store
-
-#ignore pickle files
+#pickle files
 *.p
 
+#log files
+*.log
+
+#python files
 *.pyc
 dist/*
 build/*
 movieinfo.egg-info/*
+
+#annoying hidden files
+.DS_Store
