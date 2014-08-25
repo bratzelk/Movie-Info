@@ -19,31 +19,12 @@ from Normaliser import Normaliser
 from IdFinder import IdFinder
 from Cache import Cache
 
+from Config import *
+
 
 __version__ = "0.6"
 
 
-#####################################################
-#Some Settings
-#####################################################
-
-#Logger Settings
-logging.basicConfig(filename='log.log', filemode='w', level=logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
-
-#the amount of time to wait before timing out during each lookup
-timeout = 20
-
-#a list of filetypes to match (it will also match directory names)
-allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv","mp4","divx"]
-
-#The regex pattern used to match movie names
-movieMatchRegex = "^[^.].+$"
-
-#The directory where the html templates are stored
-templateDirectory = os.path.dirname(os.path.abspath(__file__)) + "/templates"
-
-
-#####################################################
 
 #####################################################
 #Function to produce some simple output
@@ -85,7 +66,7 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
 
     movielookup = MovieLookup()                         #A class to help lookup movie titles
     movieDataUtil = MovieDataUtil()                     #A helper class for movie json data
-    matcher = Matcher(movieMatchRegex, allowedFiletypes)#Match files in a given directory
+    matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)#Match files in a given directory
     normaliser = Normaliser()                           #
     idFinder = IdFinder()                               #Used to find an imdb id from movie filename
     cache = Cache()                                     #Used for caching data
@@ -162,8 +143,8 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
 
     #Output the data
     if HTML_OUTPUT_FLAG:
-        logging.debug('Loading template from: %s', templateDirectory)
-        templateEnvironment = Environment(loader=FileSystemLoader(templateDirectory),trim_blocks=True)
+        logging.debug('Loading template from: %s', Config.templateDirectory)
+        templateEnvironment = Environment(loader=FileSystemLoader(Config.templateDirectory),trim_blocks=True)
         print templateEnvironment.get_template('main.html').render(
             movieLookupData=movieData,
             failedLookups=failedLookups,
@@ -195,7 +176,7 @@ def start():
     #####################################################
 
     #set the timeout
-    socket.setdefaulttimeout(timeout)
+    socket.setdefaulttimeout(Config.timeout)
 
     #Run the program using the line arguments
     run(args['dir'], args['html'], args['limit'])

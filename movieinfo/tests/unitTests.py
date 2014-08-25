@@ -13,17 +13,24 @@ from main import *
 
 class UnitTests(unittest.TestCase):
 
-    allowedFiletypes = ["tmp","avi","mpg","mpeg","mkv","mp4","divx"]
-    matchRegex = "^[^.].+$"
-
     def setUp(self):
-        self.matcher = Matcher(self.matchRegex, self.allowedFiletypes)
+        self.matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)
         self.movieLookup = MovieLookup()
         self.movieDataUtil = MovieDataUtil()
         self.normaliser = Normaliser()
         self.idFinder = IdFinder()
 
 
+    #####################################################
+    #Test the Config Class
+    #####################################################
+    def testConfigVarsExist(self):
+        self.assertGreater(Config.timeout, 0)
+        self.assertGreater(len(Config.allowedFiletypes), 0)
+
+    def testConfigVarsNotExist(self):
+        with self.assertRaises(AttributeError):
+            print Config.fake
 
     #####################################################
     #Test the Matcher Class

@@ -3,6 +3,7 @@ import re
 import urllib
 import urllib2
 import logging
+import time
 
 
 #This class will find an IMDB Movie id given a movie title
@@ -26,14 +27,21 @@ class IdFinder:
 
     def findIdByTitle(self, title):
         """ """
+
+        #let's limit the number of requests to 0.5/second to avoid sending too many requests
+        time.sleep(2)
+
+        logging.debug('Searching Google/IMDB for: %s', title)
         lookupSite = self._lookupSite(title)
         searchURL = lookupSite["searchURL"]
         results = json.load(urllib.urlopen(searchURL))
         try:
             url = results['responseData']['results'][0]['url']
             IMDBId = re.search(lookupSite["urlparser"], url).group(1)
+            logging.debug('IMDB ID found: %s', IMDBId)
         except:
             IMDBId = None
+            logging.debug('IMDB ID not found!')
 
         return IMDBId
 
