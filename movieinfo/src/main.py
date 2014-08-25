@@ -69,7 +69,7 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
     matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)#Match files in a given directory
     normaliser = Normaliser()                           #
     idFinder = IdFinder()                               #Used to find an imdb id from movie filename
-    cache = Cache()                                     #Used for caching data
+    movieCache = Cache(Config.movieCacheFile)           #Used for caching movie data
 
     #First, let's match files which match the regex and have the required file extensions in the given directory
     matcher.findInDirectory(MOVIE_DIR)
@@ -87,7 +87,6 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
     #Now we lookup successful matches, first in the cache, then online
     movieData = {}      #successful lookup data will go here
     failedLookups = []  #we will do something with failed lookups later...
-    cachedMovies = cache.getMovieData() #the previously found movies
 
     count = 0   #used to limit the number of lookups we will do
     for title in normalisedMovieMatches:
@@ -96,8 +95,8 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
             break
 
         #Check if the movie is in our cache
-        if(cachedMovies.get(title)):
-            movieData[title] = cachedMovies.get(title)
+        if(movieCache.find(title)):
+            movieData[title] = movieCache.find(title)
         #Otherwise, lookup using API
         else:
             #look up each movie in the list
@@ -107,7 +106,7 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
             if movieDataUtil.isValidLookupResult(lookupData):
                 movieData[title] = lookupData
                 #great, let's also add it to the cache
-                cachedMovies[title] = lookupData
+                movieCache.addToCache(title, lookupData)
             else:
                 failedLookups.append(title)
 
@@ -129,14 +128,14 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
                 movieData[title] = lookupData
                 titleCorrections += 1
                 #great, let's also add it to the cache
-                cachedMovies[title] = lookupData
+                movieCache.addToCache(title, lookupData)
             else:
                 failedLookups.append(title)
         else:
             failedLookups.append(title)
 
     #Save the updated cache
-    cache.saveMovieData(cachedMovies)
+    movieCache.saveCacheToDisk()
 
     #sort the data by imdb id
     movieData = movieDataUtil.sortMovieData(movieData)

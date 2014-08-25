@@ -24,6 +24,9 @@ class Config:
     #The directory where the html templates are stored
     templateDirectory = os.path.dirname(os.path.abspath(__file__)) + "/templates"
 
+    #The cache file to use for movies
+    movieCacheFile = "movieCache.p"
+
 
     def __init__(self):
         pass;

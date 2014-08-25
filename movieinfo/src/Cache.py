@@ -9,43 +9,85 @@ class Cache:
     cacheDir = os.getcwd()
 
     #This is the name of the file where the movie cache is stored
-    cacheFile = os.path.join(cacheDir, "movieCache.p")
+    cacheFile = ""
+
+    cacheData = {}
+    dirty = False
+
+    hits = 0
+    misses = 0
 
 
-    def __init__(self):
-        """If the cache file doesn't exist then create it"""
-        if not os.path.exists(self.getMovieCacheFile()):
+    def __init__(self, cacheFile):
+        """Load a cache from a file, create it if the file doesn't exist."""
+        self._setCacheFile(cacheFile)
+
+        #If the cache file doesn't exist then create it.
+        if not os.path.exists(self._getCacheFile()):
             logging.debug('Pickle cache does not exist. Create a new one.')
             logging.debug('Cache file will be saved in: %s', self.cacheDir)
-            open(self.getMovieCacheFile(), 'w').close() 
+            open(self._getCacheFile(), 'w').close()
 
-    def _saveToCache(self, data, cacheFile):
-        """Save any dictionary to a cache file"""
-        pickle.dump(data, open(cacheFile, "wb"))
+        self.cacheData = self._getDataFromCache(self._getCacheFile())
+
+    def _deleteCacheFile(self, cacheFile):
+        os.remove(cacheFile)
 
     def _getDataFromCache(self, cacheFile):
         """Get dictionary data from any cache file"""
+        logging.debug('Loading data from cache file: %s', self.cacheFile)
         try:
             data = pickle.load(open(cacheFile, "rb"))
             return data
         except EOFError:
             return {}
 
-    def _deleteCacheFile(self, cacheFile):
-        os.remove(cacheFile)
+    def _setCacheFile(self, cacheFile):
+        """Set the cache file to use"""
+        self.cacheFile = os.path.join(self.cacheDir, cacheFile)
 
-    def getMovieCacheFile(self):
-        """Get the movie cache file"""
+    def _getCacheFile(self):
+        """Get the cache file"""
         return self.cacheFile
 
-    def getMovieData(self):
-        """Return the movie data from the cache file"""
-        return self._getDataFromCache(self.getMovieCacheFile())
+    def deleteCache(self):
+        """Delete the Cache File"""
+        logging.debug('Deleting entire cache file')
+        self._deleteCacheFile(self._getCacheFile())
 
-    def saveMovieData(self, movieData):
-        """Save the movie data to the cache file"""
-        self._saveToCache(movieData, self.getMovieCacheFile())
+    def find(self, item):
+        """Returns the item in the Cache or None if item is not found"""
+        result = self.cacheData.get(item)
+        if(result):
+            self.hits += 1
+            logging.debug('Cache hit for: %s', item)
+        else:
+            self.misses += 1
+            logging.debug('Cache miss for: %s', item)
 
-    def deleteMovieCache(self):
-        """Delete the movie cache file"""
-        self._deleteCacheFile(self.getMovieCacheFile())
+        return result
+
+    def addToCache(self, key, value):
+        """Add data to the cache. Will overwrite anything currently in the cache with the same key. This won't be saved to disk."""
+        self.cacheData[key] = value
+        self.dirty = True
+
+    def isDirty(self):
+        """Has the cache been updated"""
+        return self.dirty
+
+    def saveCacheToDisk(self):
+        """Update the cache on disk"""
+        if(self.dirty):
+            logging.debug('Cache dirty, saving to disk.')
+            pickle.dump(self.cacheData, open(self.cacheFile, "wb"))
+            self.dirty = False
+        else:
+            logging.debug('Cache clean, not actually saving.')
+
+    def hits(self):
+        return self.hits
+
+    def misses(self):
+        return self.misses
+
