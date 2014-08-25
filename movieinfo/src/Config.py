@@ -10,7 +10,7 @@ class Config(object):
     logging.basicConfig(filename='log.log', filemode='w', level=logging.DEBUG,\
      format='%(asctime)s: %(message)s', datefmt='%m/%d/%Y %I:%M:%S%p')
 
-    #the amount of time to wait before timing out during each lookup
+    #the amount of time to wait (in ms) before timing out during each lookup
     timeout = 20
 
     #a list of filetypes to match (it will also match directory names)
