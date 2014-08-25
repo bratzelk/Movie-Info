@@ -78,9 +78,9 @@ def run(movie_dir, html_output_flag, limit):
 
     #First, let's match files which match the regex and have the
     #required file extensions in the given directory
-    matcher.findInDirectory(movie_dir)
-    movie_matches = matcher.getMatches()
-    unmatched = matcher.getIgnored()
+    matcher.find_in_directory(movie_dir)
+    movie_matches = matcher.get_matches()
+    unmatched = matcher.get_ignored()
 
     #normalise the matches (the filenames will be used as movie titles)
     normalised_movie_matches = []

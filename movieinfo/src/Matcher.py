@@ -13,52 +13,60 @@ class Matcher(object):
     and list of ignored, or unmatched filenames/directories"""
 
     #Stores a list of titles which were matched
-    matchList = []
+    _match_list = []
 
     #A list of items which were ignored due to their file extension
-    ignoredList = []
+    _ignored_list = []
 
-    def __init__(self, matchRegex, allowedFiletypes):
-        self.matchList = []
-        self.ignoredList = []
+    def __init__(self, match_regex, allowed_file_types):
+        self._match_list = []
+        self._ignored_list = []
 
-        self.matchRegex = matchRegex
+        self._match_regex = match_regex
 
-        self.allowedFiletypes = allowedFiletypes
+        self._allowed_file_types = allowed_file_types
 
-    def _addMatch(self, item):
-        self.matchList.append(item)
+    def _add_match(self, item):
+        """Add a matched movie to the list."""
+        self._match_list.append(item)
 
     def _ignore(self, item):
-        self.ignoredList.append(item)
+        """Add an ignored movie to the list."""
+        self._ignored_list.append(item)
 
-    def getMatches(self):
-        return self.matchList
+    def get_matches(self):
+        """Returns the list of matched movies."""
+        return self._match_list
 
-    def getIgnored(self):
-        return self.ignoredList
+    def get_ignored(self):
+        """Returns the list of ignore movies."""
+        return self._ignored_list
 
 
-    #extract file extension from the filename, if it exists
-    def _getFileExtension(self, fullFileName):
+    @classmethod
+    def _get_file_extension(cls, full_filename):
+        """Extract file extension from the filename, if it exists."""
         try:
-            (filename, extension) = fullFileName.rsplit( ".", 1 )
+            (filename, extension) = full_filename.rsplit(".", 1)
         except:
-            filename = fullFileName
+            filename = full_filename
             extension = ""
         return (filename, extension)
 
-    #check if a file extension is in our allowed list
-    def _isValidExtension(self, extension):
+    def _is_valid_extension(self, extension):
+        """Check if a file extension is allowed."""
+
         #force all lowercase file extensions
-        allowedFiletypes = map(lambda x:x.lower(), self.allowedFiletypes)
-        if len(extension) in range(1,5) and extension.lower() not in allowedFiletypes:
+        _allowed_file_types = map(lambda x:x.lower(), self._allowed_file_types)
+        if len(extension) in range(1, 5) and extension.lower() \
+                                    not in _allowed_file_types:
             return False
         else:
             return True
 
-    #find items in a directory which match our rules
-    def findInDirectory(self, directory):
+    def find_in_directory(self, directory):
+        """Find items in a directory which match our rules."""
+
         #open the directory containing all of the matches.
         try: #could also use: os.path.isdir()
             os.chdir(directory)
@@ -70,18 +78,19 @@ class Matcher(object):
         for files in os.listdir("."):
 
             #Match our regex against everything in the folder
-            matchObj = re.match( self.matchRegex , files)
+            matched = re.match(self._match_regex, files)
 
             #Add all items which matched the pattern to our list to lookup later
-            if matchObj:
+            if matched:
 
-                item = matchObj.group()
+                item = matched.group()
 
-                (item, extension) = self._getFileExtension(item)
+                (item, extension) = self._get_file_extension(item)
 
-                #if the file extension doesn't exist or is allowed then we add the movie to the list
-                if self._isValidExtension(extension):
-                    self._addMatch(item)
+                #if the file extension doesn't exist or is
+                #allowed then we add the movie to the list
+                if self._is_valid_extension(extension):
+                    self._add_match(item)
                     #print item
                 else:
                     #print "Ignoring Item: %s" % item

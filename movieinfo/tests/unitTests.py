@@ -48,15 +48,15 @@ class UnitTests(unittest.TestCase):
     #####################################################
 
     def testFileExtensionValidation(self):
-        is_valid_extension = self.matcher._isValidExtension("avi")
+        is_valid_extension = self.matcher._is_valid_extension("avi")
         self.assertTrue(is_valid_extension)
 
     def testFindInDirectory(self):
         directory = "./tests/testMovieDirectory"
-        self.matcher.findInDirectory(directory)
+        self.matcher.find_in_directory(directory)
 
-        movieMatches = self.matcher.getMatches()
-        unMatched = self.matcher.getIgnored()
+        movieMatches = self.matcher.get_matches()
+        unMatched = self.matcher.get_ignored()
 
         numberOfMatches = len(movieMatches)
         numberOfNonMatches = len(unMatched)
