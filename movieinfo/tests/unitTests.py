@@ -73,13 +73,13 @@ class UnitTests(unittest.TestCase):
     #####################################################
     def testBadMovieLookup(self):
         title = "Film Does Not Exist"
-        lookupResult = self.movieLookup.lookupByTitle(title)
+        lookupResult = self.movieLookup.lookup_by_title(title)
         isValidLookup = MovieDataUtil.is_valid_lookup_result(lookupResult)
         self.assertFalse(isValidLookup)
 
     def testGoodMovieLookup(self):
         title = "true grit"
-        lookupResult = self.movieLookup.lookupByTitle(title)
+        lookupResult = self.movieLookup.lookup_by_title(title)
         isValidLookup = MovieDataUtil.is_valid_lookup_result(lookupResult)
         self.assertTrue(isValidLookup)
     #####################################################
@@ -148,7 +148,7 @@ class UnitTests(unittest.TestCase):
         title = "Waynes world 2"
         actualTitle = "Wayne's World 2"
 
-        lookupResult = self.movieLookup.lookupByTitle(title)
+        lookupResult = self.movieLookup.lookup_by_title(title)
         isValidLookup = MovieDataUtil.is_valid_lookup_result(lookupResult)
         #Check that this isn't a correct title (it is missing an apostrophe)
         self.assertFalse(isValidLookup)
@@ -157,7 +157,7 @@ class UnitTests(unittest.TestCase):
         #check that we found an id for this movie
         self.assertIsNotNone(foundId)
 
-        lookupResult = self.movieLookup.lookupById(foundId)
+        lookupResult = self.movieLookup.lookup_by_id(foundId)
         isValidLookup = MovieDataUtil.is_valid_lookup_result(lookupResult)
         self.assertTrue(isValidLookup)
 

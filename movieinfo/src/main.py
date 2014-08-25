@@ -107,7 +107,7 @@ def run(movie_dir, html_output_flag, limit):
         #Otherwise, lookup using API
         else:
             #look up each movie in the list
-            lookup_data = movielookup.lookupByTitle(title)
+            lookup_data = movielookup.lookup_by_title(title)
 
             #check if we found a movie
             if MovieDataUtil.is_valid_lookup_result(lookup_data):
@@ -129,7 +129,7 @@ def run(movie_dir, html_output_flag, limit):
     for title, found_id in id_lookup_dict.items():
         if found_id != None:
             #we found an id, now let's look the movie up by its id
-            lookup_data = movielookup.lookupById(found_id)
+            lookup_data = movielookup.lookup_by_id(found_id)
 
             #theoretically this should always be true
             #unless we got an invalid id somehow...
