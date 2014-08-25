@@ -23,6 +23,7 @@ from Config import *
 
 
 __version__ = "0.6"
+__author__ = "Kim Bratzel"
 
 
 
@@ -151,6 +152,8 @@ def run(MOVIE_DIR, HTML_OUTPUT_FLAG, LIMIT):
             titleCorrections=titleCorrections,
             dateTime = time.strftime("%c"),
             version = __version__,
+            author = __author__,
+            cacheStats = movieCache.cacheStats(),
         )
     else:
         simpleOutput(movieData, failedLookups, unMatched)

@@ -85,9 +85,16 @@ class Cache:
         else:
             logging.debug('Cache clean, not actually saving.')
 
-    def hits(self):
+    def getHits(self):
         return self.hits
 
-    def misses(self):
+    def getMisses(self):
         return self.misses
+
+    def cacheStats(self):
+        return  {
+                    "hits": self.getHits(),
+                    "misses": self.getMisses(),
+                    "file": self._getCacheFile(),
+                }
 
