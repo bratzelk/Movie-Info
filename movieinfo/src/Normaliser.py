@@ -1,4 +1,4 @@
-import logging
+"""Helper functions for normalising and manipulating strings"""
 
 class Normaliser(object):
     """Helper functions for normalising and manipulating strings"""

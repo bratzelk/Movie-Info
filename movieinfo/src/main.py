@@ -67,9 +67,6 @@ def run(movie_dir, html_output_flag, limit):
     #A class to help lookup movie titles
     movielookup = MovieLookup()
 
-    #A helper class for movie json data
-    movie_data_util = MovieDataUtil()
-
     #Match files in a given directory
     matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)
 
@@ -113,7 +110,7 @@ def run(movie_dir, html_output_flag, limit):
             lookup_data = movielookup.lookupByTitle(title)
 
             #check if we found a movie
-            if movie_data_util.isValidLookupResult(lookup_data):
+            if MovieDataUtil.is_valid_lookup_result(lookup_data):
                 movie_data[title] = lookup_data
                 #great, let's also add it to the cache
                 movie_cache.add_to_cache(title, lookup_data)
@@ -136,7 +133,7 @@ def run(movie_dir, html_output_flag, limit):
 
             #theoretically this should always be true
             #unless we got an invalid id somehow...
-            if movie_data_util.isValidLookupResult(lookup_data):
+            if MovieDataUtil.is_valid_lookup_result(lookup_data):
                 movie_data[title] = lookup_data
                 title_corrections += 1
                 #great, let's also add it to the cache
@@ -150,7 +147,7 @@ def run(movie_dir, html_output_flag, limit):
     movie_cache.save_cache_to_disk()
 
     #sort the data by imdb id
-    movie_data = movie_data_util.sortMovieData(movie_data)
+    movie_data = MovieDataUtil.sort_movie_data(movie_data)
 
     #Output the data
     if html_output_flag:

@@ -21,7 +21,6 @@ class UnitTests(unittest.TestCase):
     def setUpClass(self):
         self.matcher = Matcher(Config.movieMatchRegex, Config.allowedFiletypes)
         self.movieLookup = MovieLookup()
-        self.movieDataUtil = MovieDataUtil()
         self.normaliser = Normaliser()
         self.idFinder = IdFinder()
         self.cache = Cache(self._test_cache_file)
@@ -75,13 +74,13 @@ class UnitTests(unittest.TestCase):
     def testBadMovieLookup(self):
         title = "Film Does Not Exist"
         lookupResult = self.movieLookup.lookupByTitle(title)
-        isValidLookup = self.movieDataUtil.isValidLookupResult(lookupResult)
+        isValidLookup = MovieDataUtil.is_valid_lookup_result(lookupResult)
         self.assertFalse(isValidLookup)
 
     def testGoodMovieLookup(self):
         title = "true grit"
         lookupResult = self.movieLookup.lookupByTitle(title)
-        isValidLookup = self.movieDataUtil.isValidLookupResult(lookupResult)
+        isValidLookup = MovieDataUtil.is_valid_lookup_result(lookupResult)
         self.assertTrue(isValidLookup)
     #####################################################
 
@@ -150,7 +149,7 @@ class UnitTests(unittest.TestCase):
         actualTitle = "Wayne's World 2"
 
         lookupResult = self.movieLookup.lookupByTitle(title)
-        isValidLookup = self.movieDataUtil.isValidLookupResult(lookupResult)
+        isValidLookup = MovieDataUtil.is_valid_lookup_result(lookupResult)
         #Check that this isn't a correct title (it is missing an apostrophe)
         self.assertFalse(isValidLookup)
 
@@ -159,7 +158,7 @@ class UnitTests(unittest.TestCase):
         self.assertIsNotNone(foundId)
 
         lookupResult = self.movieLookup.lookupById(foundId)
-        isValidLookup = self.movieDataUtil.isValidLookupResult(lookupResult)
+        isValidLookup = MovieDataUtil.is_valid_lookup_result(lookupResult)
         self.assertTrue(isValidLookup)
 
         #now check the new title compares to the actual title
