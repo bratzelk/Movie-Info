@@ -1,36 +1,6 @@
 @import "variables.less";
 @import "mixins.less";
 
-/*
- *  Description:  CSS descriptions for DataTables
- *  Author:       Allan Jardine
- *  Created:      Tue May 12 06:47:22 BST 2009
- *  Modified:     by Kim Bratzel
- *  Language:     LESS
- *  Project:      DataTables
- *
- *  Copyright 2009 Allan Jardine. All Rights Reserved.
- *
- * ***************************************************************************
- * DESCRIPTION
- *
- * The styles given here are suitable for the demos that are used with the standard DataTables
- * distribution (see www.datatables.net). You will most likely wish to modify these styles to
- * meet the layout requirements of your site.
- *
- * Common issues:
- *   'full_numbers' pagination - I use an extra selector on the body tag to ensure that there is
- *     no conflict between the two pagination types. If you want to use full_numbers pagination
- *     ensure that you either have "example_alt_pagination" as a body class name, or better yet,
- *     modify that selector.
- *   Note that the path used for Images is relative. All images are by default located in
- *     ../images/ - relative to this CSS file.
- */
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * DataTables features
- */
-
 .dataTables_wrapper {
 	margin: 10px 0px 0px 10px;
 	position: relative;
@@ -38,65 +8,16 @@
 	zoom: 1; /* Feeling sorry for IE */
 }
 
-.dataTables_processing {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	width: 250px;
-	height: 30px;
-	margin-left: -125px;
-	margin-top: -15px;
-	padding: 14px 0 2px 0;
-	border: 1px solid #ddd;
-	text-align: center;
-	color: #999;
-	font-size: 14px;
-	background-color: white;
-}
-
-.dataTables_length {
-	width: 40%;
-	float: left;
-}
-
-.dataTables_filter {
-	width: 50%;
-	float: right;
-	text-align: right;
-}
-
-.dataTables_info {
-	width: 60%;
-	float: left;
-}
-
-.dataTables_paginate {
-	float: right;
-	text-align: right;
-}
 
 
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+/*
  * DataTables display
  */
 table.display {
 	margin: 0 auto;
 	clear: both;
 	width: 100%;
-	
-	/* Note Firefox 3.5 and before have a bug with border-collapse
-	 * ( https://bugzilla.mozilla.org/show%5Fbug.cgi?id=155955 ) 
-	 * border-spacing: 0; is one possible option. Conditional-css.com is
-	 * useful for this kind of thing
-	 *
-	 * Further note IE 6/7 has problems when calculating widths with border width.
-	 * It subtracts one px relative to the other browsers from the first column, and
-	 * adds one to the end...
-	 *
-	 * If you want that effect I'd suggest setting a border-top/left on th/td's and 
-	 * then filling in the gaps with other borders.
-	 */
 }
 
 table.display thead th {
@@ -113,21 +34,12 @@ table.display tfoot th {
 	font-weight: bold;
 }
 
-table.display tr.heading2 td {
-	border-bottom: 1px solid #aaa;
-}
-
-table.display td {
-	padding: 3px 10px;
-}
-
-table.display td.center {
-	text-align: center;
+table.display tr td {
+	padding: 0px 10px 0px 10px;
 }
 
 
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+/*
  * DataTables sorting
  */
 
@@ -159,10 +71,6 @@ table.display thead td:active {
 
 
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * DataTables row classes
- */
-
 tr.odd {
 	background-color: @row-odd;
 }
@@ -172,49 +80,6 @@ tr.even {
 }
 
 
-
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Misc
- */
-.dataTables_scroll {
-	clear: both;
-}
-
-.dataTables_scrollBody {
-	*margin-top: -1px;
-	-webkit-overflow-scrolling: touch;
-}
-
-.top .dataTables_info {
-	float: none;
-}
-
-.clear {
-	clear: both;
-}
-
-.dataTables_empty {
-	text-align: center;
-}
-
-tfoot input {
-	margin: 0.5em 0;
-	width: 100%;
-	color: #444;
-}
-
-tfoot input.search_init {
-	color: #999;
-}
-
-
-
-/*
- * Sorting classes for columns
- */
-/* For the standard odd/even */
 tr.odd td.sorting_1 {
 	background-color: @row-odd-darker;
 }
