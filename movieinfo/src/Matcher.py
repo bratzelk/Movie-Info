@@ -2,9 +2,8 @@
 within a single directory it creates a list of matched filenames/directories
 and list of ignored, or unmatched filenames/directories"""
 
-import os 
+import os
 import re
-import logging
 
 
 class Matcher(object):
@@ -48,7 +47,7 @@ class Matcher(object):
         """Extract file extension from the filename, if it exists."""
         try:
             (filename, extension) = full_filename.rsplit(".", 1)
-        except:
+        except ValueError:
             filename = full_filename
             extension = ""
         return (filename, extension)
@@ -57,7 +56,7 @@ class Matcher(object):
         """Check if a file extension is allowed."""
 
         #force all lowercase file extensions
-        _allowed_file_types = map(lambda x:x.lower(), self._allowed_file_types)
+        _allowed_file_types = [x for x in self._allowed_file_types if x.lower()]
         if len(extension) in range(1, 5) and extension.lower() \
                                     not in _allowed_file_types:
             return False
@@ -70,7 +69,7 @@ class Matcher(object):
         #open the directory containing all of the matches.
         try: #could also use: os.path.isdir()
             os.chdir(directory)
-        except:
+        except IOError:
             print "Error: Directory, %s does not exist!" % (directory)
             exit()
 

@@ -113,4 +113,3 @@ class Cache(object):
             "file": self._get_cache_file(), \
             "size": self.get_cache_size(),
                 }
-

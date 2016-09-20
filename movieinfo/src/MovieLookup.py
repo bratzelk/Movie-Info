@@ -2,7 +2,6 @@
 
 import json
 import urllib2
-import logging
 
 class MovieLookup(object):
     """Find metadata for a movie"""
@@ -60,4 +59,3 @@ class MovieLookup(object):
         url = self._get_api_id_url(imdb_id)
         lookup_result = self._get_data_from_url(url)
         return lookup_result
-

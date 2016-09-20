@@ -12,7 +12,7 @@ class IdFinder(object):
     """This class will find an IMDB Movie id given a movie title
     It can be used to help correct erroneous movie titles"""
 
-    _url_regex = "imdb.com/title\/(.*?)\/"
+    _url_regex = r"imdb.com/title\/(.*?)\/"
     _lookup_domain = "imdb.com"
 
     def __init__(self):
@@ -22,7 +22,8 @@ class IdFinder(object):
         """Generates the lookup URL for a given title"""
 
 #search_url = "http://www.google.com/search?q=site%%3A%s+%s"% (domain, title)
-        search_url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=site%%3A%s+%s" % (self._lookup_domain, title)
+        search_url = """http://ajax.googleapis.com/ajax/services/search/web?v=1.
+                        0&q=site%%3A%s+%s""" % (self._lookup_domain, title)
         return search_url
 
     def find_id_by_title(self, title):
@@ -39,7 +40,10 @@ class IdFinder(object):
             url = results['responseData']['results'][0]['url']
             imdb_id = re.search(self._url_regex, url).group(1)
             logging.debug('IMDB ID found: %s', imdb_id)
-        except:
+        except re.error:
+            imdb_id = None
+            logging.debug('IMDB ID not found!')
+        else:
             imdb_id = None
             logging.debug('IMDB ID not found!')
 
@@ -51,5 +55,3 @@ class IdFinder(object):
         for title in title_list:
             id_dict[title] = self.find_id_by_title(title)
         return id_dict
-
-
