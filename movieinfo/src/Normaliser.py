@@ -12,7 +12,7 @@ class Normaliser(object):
         it completely and ignore strings in the pattern match...If the last
         four to six chars of a string are a number (with or without braces),
         remove them. This might cause a problem with some movies..."""
-        
+
         braces = ["{", "}", "(", ")", "[", "]"]
 
         #first check if there are braces and a number at the end of the string
@@ -36,7 +36,7 @@ class Normaliser(object):
         return string.lower().strip()
 
     @staticmethod
-    def normalise_list_and_remove_trailing_number(list_of_strings):
+    def normalise_and_remove_number(list_of_strings):
         """Normalise a list of strings and remove any trailing number."""
 
         normalised_strings = []
