@@ -125,7 +125,6 @@ class UnitTests(unittest.TestCase):
         correctUrl = "http://www.omdbapi.com/?i=tt0099785"
         assertEquals(url, correctUrl)
         
-
     #####################################################
 
 
@@ -195,7 +194,7 @@ class UnitTests(unittest.TestCase):
         self.assertEquals(self.cache.get_misses(), 1)
 
         self.cache.delete_cache()
-        
+
     #####################################################
 
 
