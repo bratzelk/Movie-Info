@@ -94,11 +94,10 @@ Dependencies
  - python 2.7+
  - [jinja2](http://jinja.pocoo.org) (sudo pip install jinja2)
 
-ToDo
+ToDo (See [Issues](https://github.com/bratzelk/Movie-Info/issues) also)
 --------------
 
  - Make HTML Pretty
- - Cleanup the code
  - Finish writing the unit tests
  - Cache Lookups Locally (maybe using a pickle?)
  - Write the Wiki
